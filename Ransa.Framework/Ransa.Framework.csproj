@@ -35,6 +35,7 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
@@ -54,6 +55,7 @@
     <Compile Include="DBType.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="HelperRest.cs" />
+    <Compile Include="InsertLog.cs" />
     <Compile Include="Obligatorio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Token\RequestToken.cs" />

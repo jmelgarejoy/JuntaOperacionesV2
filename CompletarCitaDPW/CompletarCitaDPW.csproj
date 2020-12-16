@@ -64,6 +64,10 @@
       <Project>{c7586f30-b23d-4090-b723-d8164a2510db}</Project>
       <Name>Ransa.Entidades</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Ransa.Framework\Ransa.Framework.csproj">
+      <Project>{55a27fe4-32e0-4be1-9438-ad23fc409462}</Project>
+      <Name>Ransa.Framework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Ransa.LogicaNegocios\Ransa.LogicaNegocios.csproj">
       <Project>{ecfb9c1a-6962-48f0-845a-6766eaf314fa}</Project>
       <Name>Ransa.LogicaNegocios</Name>

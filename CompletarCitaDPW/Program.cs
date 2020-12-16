@@ -1,11 +1,10 @@
 ﻿using Newtonsoft.Json;
+using Ransa.Framework;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 using Entidad = Ransa.Entidades.GestionCita;
 using Logica = Ransa.LogicaNegocios.GestionCita;
 namespace CompletarCitaDPW
@@ -28,37 +27,35 @@ namespace CompletarCitaDPW
                     foreach (Entidad.BKCitaAutomatica item in LstBK)
                     {
                         try
-                        { 
-                        Entidad.CitaDPWQueryInput input = new Entidad.CitaDPWQueryInput();
-                        List<Entidad.DatosBKCitaAutomatica> LstDatosBK = new List<Entidad.DatosBKCitaAutomatica>();
-                        List<Entidad.DatosCitaCitaAutomatica> LstDatosCita = new List<Entidad.DatosCitaCitaAutomatica>();
-                        LstDatosBK = ConsultaDatosBK(item.NROBOOK, ConfigurationManager.AppSettings["OPEPORT"]);
-                        LstDatosCita = ConsultaDatosCitas(item.NROBOOK, ConfigurationManager.AppSettings["OPEPORT"]);
-                        if (LstDatosCita.Count == 0 && LstDatosBK.Count > 0)
                         {
-                            for (int x = 0; x < LstDatosBK.Count; x++)
+                            Entidad.CitaDPWQueryInput input = new Entidad.CitaDPWQueryInput();
+                            List<Entidad.DatosBKCitaAutomatica> LstDatosBK = new List<Entidad.DatosBKCitaAutomatica>();
+                            List<Entidad.DatosCitaCitaAutomatica> LstDatosCita = new List<Entidad.DatosCitaCitaAutomatica>();
+                            LstDatosBK = ConsultaDatosBK(item.NROBOOK, ConfigurationManager.AppSettings["OPEPORT"]);
+                            LstDatosCita = ConsultaDatosCitas(item.NROBOOK, ConfigurationManager.AppSettings["OPEPORT"]);
+                            if (LstDatosCita.Count == 0 && LstDatosBK.Count > 0)
                             {
-                                if (string.IsNullOrEmpty(LstDatosBK[x].FLGALERT))
-                                {
-                                    AlertaCorreos(LstDatosBK[x].NAVVIAJE, LstDatosBK[x].NROBOOK, LstDatosBK[x].NROCONTE);
-                                    ActualizaFlg(LstDatosBK[x].IDRCE, "A");
-                                }
-                               
-                            }
-
-                        }
-                        else
-                        {
-                            if (LstDatosBK.Count > LstDatosCita.Count)
-                            {
-                                int ContCita = 0;
                                 for (int x = 0; x < LstDatosBK.Count; x++)
                                 {
-                                    input = new Entidad.CitaDPWQueryInput();
-                                    if (validarDatosBK(LstDatosBK[x]))
-                                    { 
-                                        if (x < LstDatosCita.Count)
-                                        {       //SELECCIONAR TIPO DE CONTENEDOR
+                                    if (string.IsNullOrEmpty(LstDatosBK[x].FLGALERT))
+                                    {
+                                        AlertaCorreos(LstDatosBK[x].NAVVIAJE, LstDatosBK[x].NROBOOK, LstDatosBK[x].NROCONTE);
+                                        ActualizaFlg(LstDatosBK[x].IDRCE, "A");
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (LstDatosBK.Count > LstDatosCita.Count)
+                                {
+                                    int ContCita = 0;
+                                    for (int x = 0; x < LstDatosBK.Count; x++)
+                                    {
+                                        input = new Entidad.CitaDPWQueryInput();
+                                        if (validarDatosBK(LstDatosBK[x]))
+                                        {
+                                            if (x < LstDatosCita.Count)
+                                            {       //SELECCIONAR TIPO DE CONTENEDOR
                                                 string TipCont = "";
                                                 if (LstDatosBK[x].TIPCONT == "ST20")
                                                 {
@@ -132,7 +129,7 @@ namespace CompletarCitaDPW
                                                 {
                                                     requestBody.isoType = "";
                                                 }
-                                        
+
                                                 requestBody.placa = LstDatosBK[x].PLACAVEH;
                                                 requestBody.dni = LstDatosBK[x].NDOCCHOFER;
                                                 requestBody.ructercerizada = LstDatosBK[x].NRUCTRANPO;
@@ -161,7 +158,7 @@ namespace CompletarCitaDPW
                                                     {
                                                         input.ISOTYPE = "";
                                                     }
-                                                    
+
                                                     input.NROPLACA = LstDatosBK[x].PLACAVEH;
                                                     input.DOCCHFR = LstDatosBK[x].NDOCCHOFER;
                                                     input.RUCEMP = LstDatosBK[x].NRUCTRANPO;
@@ -199,30 +196,28 @@ namespace CompletarCitaDPW
                                                             ActualizaFlg(LstDatosBK[x].IDRCE, "C");
                                                         }
                                                     }
-                                                    
-                                                        ContCita += 1;
-                                                    
-                                            
-                                            
+
+                                                    ContCita += 1;
+
+
+
                                                 }
 
-                                        }
-                                        else
-                                        {
-                                            if (string.IsNullOrEmpty(LstDatosBK[x].FLGALERT))
-                                            {
-                                                AlertaCorreos(LstDatosBK[x].NAVVIAJE, LstDatosBK[x].NROBOOK, LstDatosBK[x].NROCONTE);
-                                                ActualizaFlg(LstDatosBK[x].IDRCE, "A");
                                             }
-                                      
+                                            else
+                                            {
+                                                if (string.IsNullOrEmpty(LstDatosBK[x].FLGALERT))
+                                                {
+                                                    AlertaCorreos(LstDatosBK[x].NAVVIAJE, LstDatosBK[x].NROBOOK, LstDatosBK[x].NROCONTE);
+                                                    ActualizaFlg(LstDatosBK[x].IDRCE, "A");
+                                                }
+                                            }
                                         }
                                     }
-
                                 }
-                            }
-                            else
-                            {
-                                int ContCita = 0;
+                                else
+                                {
+                                    int ContCita = 0;
                                     for (int x = 0; x < LstDatosBK.Count; x++)
                                     {
                                         input = new Entidad.CitaDPWQueryInput();
@@ -300,10 +295,9 @@ namespace CompletarCitaDPW
                                             }
                                             else
                                             {
-                                            
                                                 requestBody.isoType = "";
                                             }
-                                            
+
                                             requestBody.placa = LstDatosBK[x].PLACAVEH;
                                             requestBody.dni = LstDatosBK[x].NDOCCHOFER;
                                             //requestBody.ructercerizada = LstDatosBK[x].NRUCTRANPO;
@@ -329,13 +323,13 @@ namespace CompletarCitaDPW
                                                 input.NROCON = LstDatosBK[x].NROCONTE;
                                                 if (TipCont != "")
                                                 {
-                                                    input.ISOTYPE =TipCont;
+                                                    input.ISOTYPE = TipCont;
                                                 }
                                                 else
                                                 {
                                                     input.ISOTYPE = "";
                                                 }
-                                                
+
                                                 input.NROPLACA = LstDatosBK[x].PLACAVEH;
                                                 input.DOCCHFR = LstDatosBK[x].NDOCCHOFER;
                                                 //input.RUCEMP = LstDatosBK[x].NRUCTRANPO;
@@ -376,38 +370,31 @@ namespace CompletarCitaDPW
                                                     {
                                                         ActualizaFlg(LstDatosBK[x].IDRCE, "C");
                                                     }
-
                                                 }
-                                               
-                                                    ContCita += 1;
-                                                
+                                                ContCita += 1;
                                             }
-
                                         }
                                     }
-                                
+                                }
                             }
                         }
-                            
-                        }
                         catch (Exception ex)
-                        { }
+                        {
+                            InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, ex.Message, Environment.NewLine, ex.StackTrace));
+                        }
                     }
                 }
-                
             }
             catch (Exception ex)
             {
+                InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, ex.Message, Environment.NewLine, ex.StackTrace));
             }
-
-           
-
         }
         public static void CompletarCitasAsignadas()
         {
             try
             {
-               
+
                 List<Entidad.DatosBKCitaAsignadaAutomatica> LstDatosCitaAsignada = new List<Entidad.DatosBKCitaAsignadaAutomatica>();
                 LstDatosCitaAsignada = ConsultaDatosCitaAsignada(ConfigurationManager.AppSettings["OPEPORT"]);
                 if (LstDatosCitaAsignada.Count > 0)
@@ -569,7 +556,9 @@ namespace CompletarCitaDPW
                 }
             }
             catch (Exception ex)
-            { }
+            {
+                InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, ex.Message, Environment.NewLine, ex.StackTrace));
+            }
         }
         public static bool validarDatosBKAsignada(Entidad.DatosBKCitaAsignadaAutomatica DatosBK)
         {
@@ -666,13 +655,12 @@ namespace CompletarCitaDPW
                                 data = lgCita.Acciones(input);
                             }
                         }
-
                     }
-
                 }
             }
             catch (Exception ex)
             {
+                InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, ex.Message, Environment.NewLine, ex.StackTrace));
             }
 
 

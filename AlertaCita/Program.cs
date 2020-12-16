@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
 using Entidad = Ransa.Entidades.AlertaCita;
 using EntidadGC = Ransa.Entidades.GestionCita;
 using Logica = Ransa.LogicaNegocios.AlertaCita;
 using LogicaGC = Ransa.LogicaNegocios.GestionCita;
+
 namespace AlertaCita
 {
      class Program
@@ -25,8 +23,6 @@ namespace AlertaCita
                 EnvioAlertaStk(FechaActual);
                 EnvioPrimeraAlerta(FechaActual);
                 EnvioAlerta(FechaActual);
-
-
             }
             catch (Exception ex)
             {
@@ -50,10 +46,7 @@ namespace AlertaCita
                             {
                                 if (item.FECREG > 0)
                                 {
-
-
                                     //TIENE ALERTA ANTERIOR
-
                                     DateTime FechaCAlertAnt = new DateTime();
                                     int anio, mes, dia, hora, minuto, segundo;
                                     anio = int.Parse(item.FECREG.ToString().Substring(0, 4));
@@ -76,7 +69,6 @@ namespace AlertaCita
                                     if (FechaActual < FechaCutOff.AddMinutes(3))
                                     {
                                         //previo
-                                        
                                         if (FechaCAlertAnt.AddHours(1).AddMinutes(3) > FechaActual && FechaCAlertAnt.AddHours(1).AddMinutes(-3) < FechaActual)
                                         {
                                             string data = "";
