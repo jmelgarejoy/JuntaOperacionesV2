@@ -1,0 +1,146 @@
+﻿@{
+    ViewData["Title"] = "Importaciones / Exportaciones";
+
+    if (Session["Usuario"] == null)
+    {
+        Response.Redirect("~/Home/Index");
+
+    }
+}
+
+<link href="~/Content/impoexpo.css" rel="stylesheet" />
+<script src="~/Scripts/impoexpo.js"></script>
+<div style="margin-top: 35px;">
+    <p id="Hora"></p>
+    <div class="container-fluid p-1">
+        <div class="row p-2">
+            <h4>Importaciones / Exportaciones</h4>
+        </div>
+        <div class="row p-2">
+            <div class="col-7 col-md-6"> Escoja el tipo de Busqueda</div>
+            <div class="col-5 col-md-6 mr-auto">
+                <select class="form-control" id="Opciones" width="100%">
+                    <option value="0">Importaciones</option>
+                    <option value="1">Exportaciones</option>
+                </select>
+            </div>
+        </div>
+        <div class="row p-2">
+            <div class="col-6 col-md-2"> Fecha Planificación:</div>
+            <div class="col-6 col-md-3 mr-auto"><input id="fecha" class="FechaObj" readonly /></div>
+            <div class="col-6 col-md-5 mr-auto"></div>
+            <div class="col-12 col-md-2 mr-auto "><button id="btnBuscar" class="btn btn-Verde col-12"><span class="col-11"> Buscar</span>  <i class="fas fa-search col-1"></i></button></div>
+        </div>
+        <div class="row p-2">
+            <div class="col-12 col-md-10">
+                <h5>Detalle de busqueda</h5>
+            </div>
+            <div class="col-12 col-md-2">
+                <button class="btn btn-Verde col-12" data-toggle="modal" data-target="#PrePlanificacionModal" data-whatever="Nuevo" id="btnProcesar" disabled> Procesar  </button>
+            </div>
+
+        </div>
+        <div class="row p-2">
+            <div class="col-12">
+                <table id="tblDetalle" class="table table-striped display compact hover" style="width:100%;">
+                    <thead></thead>
+                    @*<tbody></tbody>*@
+                </table>
+                <table id="tblDetalleExpo" class="table table-striped display compact hover" style="width:100%;">
+                    <thead></thead>
+                    @* <tbody></tbody>*@
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+@* MODAL IMPORTACIONES *@
+
+
+<!-- Modal ACCESOS-->
+<div class="modal fade" id="AgrupadoModal" tabindex="-1" role="dialog" aria-labelledby="AgrupadoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-90" role="document">
+        <div class="modal-content">
+
+            <div class="form-group">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="AgrupadoModalLabel">Naves para Pre Planificación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="tblGroup" class="table table-striped display compact " style="width:100% !important">
+                                <thead>
+
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                @*</div>*@
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+<!--FIN Modal ACCESOS-->
+<!-- Modal ACCESOS-->
+<div class="modal fade" id="PrePlanificacionModal" tabindex="-1" role="dialog" aria-labelledby="PrePlanificacionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-90" role="document">
+        <div class="modal-content">
+
+            <div class="form-group">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="PrePlanificacionModalLabel">Crear pre-Planificación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body col-12">
+                    <input type="hidden" id="ID" />
+                    <input type="hidden" id="ESTADO" />
+                    <input type="hidden" id="ACCION" />
+                    <div class="row p-2">
+                        <div class="col-6 col-md-1">Fecha Inicio:</div>
+                        <div class="col-6 col-md-2 mr-auto"><input id="fechaIni" class="FechaObj" readonly /></div>
+                        <div class="col-6 col-md-1">Hora Inicio:</div>
+                        <div class="col-6 col-md-2 mr-auto"><input id="horaIni" readonly /></div>
+                        <div class="col-6 col-md-1">Fecha Fin:</div>
+                        <div class="col-6 col-md-2 mr-auto"><input id="fechaFin" class="FechaObj" readonly /></div>
+                        <div class="col-6 col-md-1">Hora Fin:</div>
+                        <div class="col-6 col-md-2 mr-auto"><input id="horaFin" readonly /></div>
+
+                    </div>
+                    <div class="row p-2" style="background-color:#c9f3c7">
+                        <div class="col-none col-md-6">Numero de contenedores Seleccionados <b><span id="nCont"></span></b> serán distribuidos en los turnos --> </div>
+                        <div class="col-6 col-md-1 mr-auto">Turno 3</div>
+                        <div class="col-6 col-md-1 mr-auto"><input id="turno3" class="form-control Resta" value="0" type="number" min="0" /></div>
+                        <div class="col-6 col-md-1 mr-auto">Turno 1</div>
+                        <div class="col-6 col-md-1 mr-auto"><input id="turno1" class="form-control Resta" value="0" type="number" min="0" /></div>
+                        <div class="col-6 col-md-1 mr-auto">Turno 2</div>
+                        <div class="col-6 col-md-1 mr-auto"><input id="turno2" class="form-control Resta" value="0" type="number" min="0" /></div>
+                        <div class="col-12" style="text-align: end;">Diferencia: <span id="Resta"></span></div>
+                        
+                    </div>
+
+                </div>
+                @*</div>*@
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-Verde" id="btnGuardarPlan" readonly>Procesar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+<!--FIN Modal ACCESOS-->

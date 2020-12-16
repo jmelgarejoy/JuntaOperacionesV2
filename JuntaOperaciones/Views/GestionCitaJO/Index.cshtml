@@ -1,0 +1,448 @@
+﻿
+
+@{
+    ViewData["Title"] = "Citas";
+
+    if (Session["Usuario"] == null)
+    {
+        Response.Redirect("~/Home/Index");
+
+    }
+}
+
+
+
+<link href="~/Content/gestioncitas.css" rel="stylesheet" />
+<script src="~/Scripts/gestioncitas.js"></script>
+<div style="margin-top: 35px;">
+    <p id="Hora"></p>
+    <div class="container-fluid p-1">
+        <div class="row p-2">
+            <h4>Citas</h4>
+        </div>
+        <div class="row p-2">
+            <div class="col-md-2 order-md-2 order-2 mb-4">
+
+                <a href="#" class="btn btn-Verde " data-toggle="modal" data-target="#nuevoalertasModal" data-whatever="Nuevo" role="button">Configuración</a>
+            </div>
+            <div class="col-md-10 order-md-1 order-1 ">
+                <div class="row justify-content-center">
+                    <div class="form-inline col-8  ">
+                        <div class="form-group col-md-6  col-xs-12 pb-2 ">
+                            <div class="col-md-4 col-xs-12">Orden de S.:</div>
+                            <div class="col-md-8 col-xs-12   mr-auto">
+                                <input class="form-control" type="text" placeholder="" id="txtOrdenServ">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 col-xs-12 pb-2">
+                            <div class="col-md-4 col-xs-12">Booking:</div>
+                            <div class="col-md-8 col-xs-12 mr-atuo">
+                                <input class="form-control" type="text" placeholder="" id="txtBooking">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6  col-xs-12 pb-2">
+                            <div class="col-md-4 col-xs-12">Desde:</div>
+                            <div class="col-md-8 col-xs-12   mr-auto">
+                                <input id="fechaIni" class="FechaObj" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 col-xs-12 pb-2">
+                            <div class="col-md-4 col-xs-12">Hasta:</div>
+                            <div class="col-md-8 col-xs-12 mr-atuo">
+                                <input id="fechaFin" class="FechaObj" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 col-xs-12 pb-2">
+                            <div class="col-md-4 col-xs-12">Contenedor:</div>
+                            <div class="col-md-8 col-xs-12 mr-atuo">
+                                <input class="form-control" type="text" placeholder="" id="txtContenedor">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-12 col-xs-12 justify-content-center pb-2">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="datosestado" id="radioCompleto" value="P">
+                                <label class="form-check-label " for="radioCompleto">Pendiente</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="datosestado" id="radioInCompleto" value="C">
+                                <label class="form-check-label " for="radioInCompleto">Completado</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="datosestado" id="radioTodos" value="V">
+                                <label class="form-check-label " for="radioTodos">Vencido</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="datosestado" id="radioTodos" value="A">
+                                <label class="form-check-label " for="radioTodos">Cancelados</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="datosestado" id="radioTodos" value="T" checked>
+                                <label class="form-check-label" for="radioTodos">Todos</label>
+                            </div>
+
+                        </div>
+                        <div class="form-group col-md-12  col-xs-12 pb-2 justify-content-center">
+                            <div class="col-md-3 col-xs-12">
+
+                                <a href="#" class="btn btn-Verde " id="btnBuscar" role="button">Buscar</a>
+                            </div>
+                            <div class="col-md-3 col-xs-12">
+                                <a href="#" class="btn btn-Verde " data-toggle="modal" data-target="#nuevoregistroModal" data-whatever="Nuevo" role="button">Nuevo</a>
+                            </div>
+                            <div class="col-md-3 col-xs-12">
+
+                                <a href="#" class="btn btn-Verde " data-toggle="modal" data-target="#masivoModal" data-whatever="Nuevo" id="btnMasiva" role="button">Cargar Excel</a>
+                                @*<button type="button" data-toggle="modal" data-target="#masivoModal" data-whatever="Nuevo" id="btnMasiva" class="btn btn-success ">Carga Masiva</button>*@
+                            </div>
+                            <div class="col-md-3 col-xs-12">
+
+                                <a href="#" class="btn btn-Verde " id="btnEliminar">Eliminar</a>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+
+
+
+        </div>
+
+        <div class="row p-2">
+            <div class="col-12">
+                <table id="tblDetalle" class="table table-striped display compact hover" style="width:100%;">
+                    <thead></thead>
+                    @*<tbody></tbody>*@
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Modal NUEVO REGISTRO-->
+<div class="modal fade" id="nuevoregistroModal" tabindex="-1" role="dialog" aria-labelledby="ContenedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="form-group">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ContenedorModalLabel">Nueva registro</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="frmNuevoRegistro">
+                    <div class="modal-body col-12">
+                        <input type="hidden" id="ACCION" />
+
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="NroCita" class="col-form-label col-12 col-md-3">Nro de Cita: (*)</label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="NroCita" type="text" class="form-control col-12" value="" required />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="FechaCita" class="col-form-label col-12 col-md-3">Fecha: (*)</label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="FechaCita" class="FechaObj" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="HoraCita" class="col-form-label col-12 col-md-3">Hora: (*)</label>
+                                    <div class="col-12 col-md-9 ">
+                                        <input id="HoraCita" readonly />
+                                        @*<input type="text" id="HoraCita" class="form-control col-12" value="09:30" required minlength="5" maxlength="5">*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+
+                                    <label for="Booking" class="col-form-label col-12 col-md-3">Booking: (*)</label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="Booking" type="text" class="form-control col-12" value="" required />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="OrdenServ" class="col-form-label col-12 col-md-3">Orden Serv.: (*)</label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="OrdenServ" type="text" class="form-control col-12" value="" required disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="reprogramaCheck" id="reprogramaCheck" value="">
+                                <label class="form-check-label" for="reprogramaCheck">
+                                    Reprogramación
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+
+                                    <label for="CitaAnt" class="col-form-label col-12 col-md-3">Cita anterior:</label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="CitaAnt" type="text" class="form-control col-12" value="" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+
+                                    <label for="Motivo" class="col-form-label col-12 col-md-3">Motivo: (máximo 250 caracteres)</label>
+                                    <div class="col-12 col-md-9">
+                                        <textarea id="Motivo" type="text" class="form-control col-12" rows="3" disabled> </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="LarCheck" id="LarCheck" value="">
+                                <label class="form-check-label" for="LarCheck">
+                                    LAR
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+
+                                    <label for="Contenedor" class="col-form-label col-12 col-md-3">Contenedor:</label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="Contenedor" type="text" class="form-control col-12" value="" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    @*</div>*@
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-Verde">Guardar</button>
+                        <button type="button" id="btnCancelar" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+
+                </form>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+<!--FIN Modal ACCESOS-->
+<!--Inicio Modal Masivo-->
+<div class="modal fade" id="masivoModal" tabindex="-1" role="dialog" aria-labelledby="ContenedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="form-group">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ContenedorModalLabel">Carga Masiva de Citas</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="frmMasiva">
+                    <div class="modal-body col-12">
+                        <input type="hidden" id="ACCION" />
+
+
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="FileAdicionales" class="col-form-label col-12 col-md-3">Archivo</label>
+                                    <div class="col-12 row" id="inputFileArchivo">
+                                        <input type="file" class="form-control-file" id="FileArchivo" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*</div>*@
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-Verde">Guardar</button>
+                        <button type="button" id="btnCancelar" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+
+                </form>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+<!--Fin Modal Masivo-->
+<!-- Modal Alertas-->
+<div class="modal fade" id="nuevoalertasModal" tabindex="-1" role="dialog" aria-labelledby="ContenedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="form-group">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ContenedorModalLabel">Configuración</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="frmNuevoAlerta">
+                    <div class="modal-body col-12">
+                        <input type="hidden" id="ACCION" />
+
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <h6 class="modal-title" id="">Previas al retiro del contenedor</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="CfDryPre" class="col-form-label col-12 col-md-3">Cut Off DRY: </label>
+                                    <div class="col-12 col-md-9 ">
+                                        <input type="number" id="CfDryPre" class="form-control col-12" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="CfReeferPre" class="col-form-label col-12 col-md-3">Cut Off REEFER: </label>
+                                    <div class="col-12 col-md-9 ">
+                                        <input type="number" id="CfReeferPre" class="form-control col-12" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="StackingPre" class="col-form-label col-12 col-md-3">Stacking: </label>
+                                    <div class="col-12 col-md-9 ">
+                                        <input type="number" id="StackingPre" class="form-control col-12" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <h6 class="modal-title" id="">Luego del retiro del contenedor</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="CfDryPos" class="col-form-label col-12 col-md-3">Cut Off DRY: </label>
+                                    <div class="col-12 col-md-9 ">
+                                        <input type="number" id="CfDryPos" class="form-control col-12" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="CfReeferPos" class="col-form-label col-12 col-md-3">Cut Off REEFER: </label>
+                                    <div class="col-12 col-md-9 ">
+                                        <input type="number" id="CfReeferPos" class="form-control col-12" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <h6 class="modal-title" id="">Límite de horas vencimiento de citas</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="HorasLimit" class="col-form-label col-12 col-md-3">Límite de horas: </label>
+                                    <div class="col-12 col-md-9 ">
+                                        <input type="number" id="HorasLimit" class="form-control col-12" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*</div>*@
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-Verde">Guardar</button>
+                        <button type="button" id="btnCancelar" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+
+                </form>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+<!--FIN Modal Alertas-->
+<!--Modal Visualizar Alertas-->
+<div class="modal fade" id="visualizaralertasModal" tabindex="-1" role="dialog" aria-labelledby="ContenedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="form-group">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ContenedorModalLabel">Visualizar Alertas</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="frmVisualizarAlerta">
+                    <div class="modal-body col-12">
+                        <input type="hidden" id="ACCION" />
+                        <div class="row p-2">
+                            <div class="col-12">
+                                <table id="tblDetalleAlertas" class="table table-striped display compact hover" style="width:100%;">
+                                    <thead></thead>
+                                    @*<tbody></tbody>*@
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    @*</div>*@
+                  
+
+                </form>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+<!--FIN Visualizar Alertas-->

@@ -1,0 +1,123 @@
+﻿@{
+    ViewData["Title"] = "Importaciones / Exportaciones";
+
+    if (Session["Usuario"] == null)
+    {
+        Response.Redirect("~/Home/Index");
+
+    }
+}
+
+    <style>
+        .row {
+            font-size: 14px;
+        }
+
+        .table {
+            font-size: 12px;
+        }
+
+        .textoTitulo {
+            font-size: 18px;
+            color: #333333;
+            background: #FFFFFF;
+            text-shadow: 2px 2px 0px #FFFFFF, 5px 4px 0px rgba(0,0,0,0.15);
+        }
+    </style>
+
+<div style="margin-top: 35px;">
+    <p id="Hora"></p>
+    <div class="container-fluid p-1">
+        <div class="row p-2">
+            <h4>Reportes Ordenes de Trabajo</h4>
+        </div>
+
+        <div class="row p-2 form-horizontal">
+            <div class="col-12">
+                <div class="row">
+                    @*<div class="col-12 row form-group">
+                        <label class="col-12 col-md-3">Seleccione un Reporte</label>
+                        <div class="col-12 col-md-9">
+                            <select class="form-control" width="100%" id="reportes">
+                                <option value="">Seleccione un reporte </option>
+                                <option value="1">Reporte OT Pendientes por trabajar </option>
+                                <option value="2">Reporte OT Pendientes por trabajar </option>
+                            </select>
+                        </div>
+                    </div>*@
+                </div>
+                <div class="row" style="border: 1px solid darkgreen; border-radius:5px;">
+                    <div class="col-12 col-md-4">
+                        <label class="control-label col-12 "> Fecha desde:</label>
+                        <div class="col-12 ">
+                            <input class="form-control" id="fechaINI" readonly />
+                        </div>
+                        <label class="control-label col-12 "> Fecha Hasta:</label>
+                        <div class="col-12 ">
+                            <input class="form-control" id="fechaFIN" readonly />
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label class="control-label col-12 "> Servicios:</label>
+                        <div class="col-12 ">
+                            <select class="form-control" width="100%" id="servicios">
+                                <option value="">Todos </option>
+                            </select>
+                        </div>
+                        <label class="control-label col-12 "> BL o Booking:</label>
+                        <div class="col-12 ">
+                            <input type="text" class="form-control" id="documento" />
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label class="control-label col-12 "> Nº OT:</label>
+                        <div class="col-12 ">
+                            <input type="number" class="form-control" id="ot" />
+                        </div>
+                        <div class="col-12">
+                            <label class="col-12">Seleccione un Reporte</label>
+                            <div class="col-12">
+                                <select class="form-control" width="100%" id="estados">
+                                    <option value="">Todos</option>
+                                    <option value="P">Pendientes </option>
+                                    <option value="T">Programados </option>
+                                    <option value="R">Re-programados </option>
+                                    <option value="L">Liquidados </option>
+                                    <option value="F">Facturadas </option>
+                                    <option value="X">Falso Servicio </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 p-2">
+                            <button class="btn btn-Verde col-12" id="btnBuscar"><i class="fas fa-search"> Buscar</i></button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="row p-2" style="        margin-top: 5px">
+            <span class="textoTitulo">Detalle</span>
+            <div class="col-12">
+                <div class="container-fluid">
+                    <table id="tblDetalle" class="table table-striped display compact hover" style="width: 100%;">
+                        <thead>
+
+                        </thead>
+                        @*<tbody></tbody>*@
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<script src="~/Scripts/reportesot.js"></script>

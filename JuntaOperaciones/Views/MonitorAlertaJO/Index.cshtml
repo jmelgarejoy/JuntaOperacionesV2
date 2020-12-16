@@ -1,0 +1,97 @@
+﻿
+
+@{
+    ViewData["Title"] = "Citas";
+
+    if (Session["Usuario"] == null)
+    {
+        Response.Redirect("~/Home/Index");
+
+    }
+}
+
+
+
+
+<script src="~/Scripts/alertacita.js"></script>
+<div style="margin-top: 35px;">
+    <p id="Hora"></p>
+    <div class="container-fluid p-1">
+        <div class="row p-2">
+            <h4>Monitor de alertas</h4>
+        </div>
+        <div class="row p-2">
+          
+            <div class="col-md-10 order-md-1 order-1 ">
+                <div class="row justify-content-center">
+                    <div class="form-inline col-8  ">
+
+                        <div class="form-group col-md-6  col-xs-12 pb-2">
+                            <div class="col-md-4 col-xs-12">Desde:</div>
+                            <div class="col-md-8 col-xs-12   mr-auto">
+                                <input id="fechaIni" class="FechaObj" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 col-xs-12 pb-2">
+                            <div class="col-md-4 col-xs-12">Hasta:</div>
+                            <div class="col-md-8 col-xs-12 mr-atuo">
+                                <input id="fechaFin" class="FechaObj" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6  col-xs-12 pb-2 ">
+                            <div class="col-md-4 col-xs-12">Orden de S.:</div>
+                            <div class="col-md-8 col-xs-12   mr-auto">
+                                <input class="form-control" type="text" placeholder="" id="txtOrdenServ">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6  col-xs-12 pb-2 ">
+                            <div class="col-md-4 col-xs-12">Nro. Cita:</div>
+                            <div class="col-md-8 col-xs-12   mr-auto">
+                                <input class="form-control" type="text" placeholder="" id="txtNroCita">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 col-xs-12 pb-2">
+                            <div class="col-md-4 col-xs-12">Booking:</div>
+                            <div class="col-md-8 col-xs-12 mr-atuo">
+                                <input class="form-control" type="text" placeholder="" id="txtBooking">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 col-xs-12 pb-2">
+                            <div class="col-md-4 col-xs-12">Contenedor:</div>
+                            <div class="col-md-8 col-xs-12 mr-atuo">
+                                <input class="form-control" type="text" placeholder="" id="txtContenedor">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group col-md-12  col-xs-12 pb-2 justify-content-center">
+                            <div class="col-md-3 col-xs-12">
+
+                                <a href="#" class="btn btn-Verde " id="btnBuscar" role="button">Buscar</a>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+
+
+
+        </div>
+
+        <div class="row p-2">
+            <div class="col-12">
+                <table id="tblDetalleAlertas" class="table table-striped display compact hover" style="width:100%;">
+                    <thead></thead>
+                    @*<tbody></tbody>*@
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,261 @@
+﻿
+@{
+    ViewData["Title"] = "Citas";
+
+    if (Session["Usuario"] == null)
+    {
+        Response.Redirect("~/Home/Index");
+
+    }
+}
+<script src="~/Scripts/citadpw.js"></script>
+<div style="margin-top: 35px;">
+    <p id="Hora"></p>
+    <div class="container-fluid p-1">
+        <div class="row p-2">
+            <h4>Citas DPW</h4>
+        </div>
+        <div class="row p-2">
+
+            <div class="col-md-10 order-md-1 order-1 ">
+                <div class="row justify-content-center">
+                    <div class="form-inline col-8  ">
+
+                        <div class="form-group col-md-6  col-xs-12 pb-2">
+                            <div class="col-md-4 col-xs-12">Desde:</div>
+                            <div class="col-md-8 col-xs-12   mr-auto">
+                                <input id="fechaIni" class="FechaObj" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 col-xs-12 pb-2">
+                            <div class="col-md-4 col-xs-12">Hasta:</div>
+                            <div class="col-md-8 col-xs-12 mr-atuo">
+                                <input id="fechaFin" class="FechaObj" readonly />
+                            </div>
+                        </div>
+
+
+                        <div class="form-group col-md-12  col-xs-12 pb-2 justify-content-center">
+                            <div class="col-md-3 col-xs-12">
+
+                                <a href="#" class="btn btn-Verde " id="btnBuscar" role="button">Buscar</a>
+                            </div>
+                            <div class="col-md-3 col-xs-12">
+                                <a href="#" class="btn btn-Verde " data-toggle="modal" data-target="#nuevoregistroModal" data-whatever="Nuevo" role="button">Nuevo</a>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+
+
+
+        </div>
+
+        <div class="row p-2">
+            <div class="col-12">
+                <table id="tblDetalle" class="table table-striped display compact hover" style="width:100%;">
+                    <thead></thead>
+                    @*<tbody></tbody>*@
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Modal NUEVO REGISTRO-->
+<div class="modal fade" id="nuevoregistroModal" tabindex="-1" role="dialog" aria-labelledby="ContenedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="form-group">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ContenedorModalLabel">Completar Citas Extraportuario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="frmNuevoRegistro">
+                    <div class="modal-body col-12">
+                        <input type="hidden" id="ACCION" />
+                        <div class="form-group" style="display:none">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="ID" class="col-form-label col-12 col-md-3">ID:</label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="ID" type="text" class="form-control col-12" value=""  />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="NroCita" class="col-form-label col-12 col-md-3">Nro de Cita: (*)</label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="NroCita" type="text" class="form-control col-12" value="" required />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" style="display:none">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="IDERCE" class="col-form-label col-12 col-md-3">IDERCE:</label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="IDERCE" type="text" class="form-control col-12" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="Contenedor" class="col-form-label col-12 col-md-3">Contenedor: (*)</label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="Contenedor" type="text" class="form-control col-12" value="" required />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="IsoType" class="col-form-label col-12 col-md-3">IsoType: </label>
+                                    <div class="col-12 col-md-9 ">
+                                        <select class="form-control" id="IsoType" WIDTH="100%">
+                                            <option value="0" text="SELECCIONE">SELECCIONE</option>
+                                            <option value="1" text="ST20 - 22GP">ST20 - 22GP</option>
+                                            <option value="2" text="ST40 - 42GP">ST40 - 42GP</option>
+                                            <option value="3" text="HC20 - 25GP">HC20 - 25GP</option>
+                                            <option value="4" text="HC40 - 45GP">HC40 - 45GP</option>
+                                            <option value="5" text="RE20 - 22RT">RE20 - 22RT</option>
+                                            <option value="6" text="RE40 - 42RT">RE40 - 42RT</option>
+                                            <option value="7" text="RH40 - 45RT">RH40 - 45RT</option>
+                                            <option value="8" text="FR20 - 22PC">FR20 - 22PC</option>
+                                            <option value="9" text="FR40 - 42PC">FR40 - 42PC</option>
+                                            <option value="10" text="OT20 - 22UT">OT20 - 22UT</option>
+                                            <option value="11" text="OT40 - 42UT">OT40 - 42UT</option>
+                                            <option value="12" text="TA20 - 22TD">TA20 - 22TD</option>
+                                            <option value="13" text="TA40 - 42TD">TA40 - 42TD</option>
+
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+
+                                    <label for="Tara" class="col-form-label col-12 col-md-3">Tara: </label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="Tara" type="text" class="form-control col-12" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="Peso" class="col-form-label col-12 col-md-3">Peso: </label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="Peso" type="text" class="form-control col-12" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="Placa" class="col-form-label col-12 col-md-3">Placa: (*)</label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="Placa" type="text" class="form-control col-12" value="" required maxlength="6" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="DNIChofer" class="col-form-label col-12 col-md-3">DNI Chofer: (*)</label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="DNIChofer" type="text" class="form-control col-12" value="" required maxlength="8" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="RucTransporte" class="col-form-label col-12 col-md-3">Ruc Emp Transporte: (*)</label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="RucTransporte" type="text" class="form-control col-12" value="" maxlength="12" required />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="Precinto1" class="col-form-label col-12 col-md-3">Precinto 1: (*)</label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="Precinto1" type="text" class="form-control col-12" value="" required />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="Precinto2" class="col-form-label col-12 col-md-3">Precinto 2: </label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="Precinto2" type="text" class="form-control col-12" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="Precinto3" class="col-form-label col-12 col-md-3">Precinto 3: </label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="Precinto3" type="text" class="form-control col-12" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row p-2">
+                                <div class="col-12 row">
+                                    <label for="Precinto4" class="col-form-label col-12 col-md-3">Precinto 4:</label>
+                                    <div class="col-12 col-md-9">
+                                        <input id="Precinto4" type="text" class="form-control col-12" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    @*</div>*@
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-Verde">Guardar</button>
+                        <button type="button" id="btnCancelar" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+
+                </form>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+<!-- FINAL NUEVO REGISTRO-->

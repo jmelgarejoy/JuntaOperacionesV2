@@ -1,0 +1,268 @@
+﻿@{
+    ViewData["Title"] = "Importaciones / Exportaciones";
+
+    if (Session["Usuario"] == null)
+    {
+        Response.Redirect("~/Home/Index");
+
+    }
+}
+
+<style>
+    .row {
+        font-size: 14px;
+    }
+</style>
+<div style="margin-top: 35px;">
+    <p id="Hora"></p>
+
+    <div class="container-fluid p-1">
+        <div class="row p-2">
+            <h4 class="col-6">Dato Generales</h4>
+            <div class="col-6 row">
+                <button class="btn btn-Verde col-2 m-1" data-toggle="modal" data-target="#BuscarOrdenModal" data-whatever="Nuevo"><i class="fas fa-search"></i></button>
+                <button class="btn btn-Verde col-2 m-1" data-toggle="modal" data-target="#CrearOrdenModal" data-whatever="Nuevo"><i class="fas fa-plus"></i></button>
+                <button id="btnGuardar" class="btn btn-Verde col-2 m-1"><i class="fas fa-save"></i></button>
+                <button id="btnImprimir" class="btn btn-Verde col-2 m-1" onclick="Imprimir();"><i class="fas fa-print"></i></button>
+            </div>
+        </div>
+        <div class="row p-2" id="divvolante">
+            <div class="col-12 col-md-1">Nº Volante:</div>
+            <div class="col-12 col-md-2"><input id="volante" type="text" class="form-control" readonly value="" /></div>
+        </div>
+        <div class="row p-2">
+            <div class="col-12 col-md-1">Solicitud:</div>
+            <div class="col-12 col-md-2"><input id="solicitud" type="text" class="form-control" readonly value="Autogenerado" /></div>
+            <div class="col-12 col-md-1">Documento:</div>
+            <div class="col-12 col-md-2"><input type="text" class="form-control" readonly id="documentoNew" /></div>
+            <div class="col-12 col-md-1">Fecha Emisión:</div>
+            <div class="col-12 col-md-2"><input id="fechaemision" type="text" class="form-control" readonly /></div>
+            <div class="col-12 col-md-1">Estado:</div>
+            <div class="col-12 col-md-2"><input id="estado" type="text" class="form-control" readonly value="Por Emitir" /></div>
+        </div>
+        <div class="row p-2">
+            <div class="col-12 col-md-1">Recalada:</div>
+            <div class="col-12 col-md-2"><input id="recalada" type="text" class="form-control" readonly /></div>
+            <div class="col-12 col-md-1">Nave:</div>
+            <div class="col-12 col-md-2"><input id="nave" type="text" class="form-control" readonly /></div>
+            <div class="col-12 col-md-1">Viajes:</div>
+            <div class="col-12 col-md-2"><input id="nvjes" type="text" class="form-control" readonly /></div>
+            <div class="col-12 col-md-1">Régimen:</div>
+            <div class="col-12 col-md-2"><input id="regimen" type="text" class="form-control" readonly /></div>
+        </div>
+        <div class="row p-2">
+            <div class="col-12 col-md-1">Observación:</div>
+            <div class="col-12 col-md-8"><input id="" type="text" class="form-control" style="background-color:wheat" /></div>
+
+            <div class="col-12 col-md-1">Tipo Doc.:</div>
+            <div class="col-12 col-md-2"><input id="tipodoc" type="text" class="form-control" readonly /></div>
+        </div>
+        <div class="row p-2">
+            <div class="col-12 col-md-1">Pto. origen:</div>
+            <div class="col-12 col-md-3"><input type="text" class="form-control" readonly id="ptoorigen" /></div>
+            <div class="col-12 col-md-1">Pto. Descarga</div>
+            <div class="col-12 col-md-4"><input type="text" class="form-control" id="ptollegada" readonly /></div>
+            <div class="col-12 col-md-1">Doc. Master:</div>
+            <div class="col-12 col-md-2"><input type="text" class="form-control" id="blmaster" readonly /></div>
+        </div>
+        <div class="row p-2">
+            <div class="col-12 col-md-1">Cliente:</div>
+            <div class="col-12 col-md-3"><input id="cliente" type="text" class="form-control" readonly /></div>
+            <div class="col-12 col-md-1">Agente</div>
+            <div class="col-12 col-md-4"><input id="agente" type="text" class="form-control" readonly /></div>
+            <div class="col-12 col-md-1">Despachador:</div>
+            <div class="col-12 col-md-2">
+                <select class="form-control" id="despachador" width="100%"></select>
+            </div>
+        </div>
+        <div class="row p-2">
+            <div class="col-12 col-md-1">Facturar a:</div>
+            <div class="col-12 col-md-3">
+                <select class="form-control" id="facturar" width="100%">
+                    <option value="2">Agente Aduana</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-1">Fecha Solicitada</div>
+            <div class="col-12 col-md-4"><input id="fecha" class="FechaObj" readonly /></div>
+            <div class="col-12 col-md-3">
+                <button class="btn btn-Verde col-12" id="btnServicios">Asignar Servicio</button>
+            </div>
+        </div>
+
+    </div>
+    <div class="row p-2" style="margin-top:5px">
+        <div class="col-12">
+            <div class="container-fluid">
+                <table id="tblDetalle" class="table table-striped display compact hover" style="width:100%;">
+                    <thead>
+
+                    </thead>
+                    @*<tbody></tbody>*@
+                </table>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal fade" id="CrearOrdenModal" tabindex="-1" role="dialog" aria-labelledby="CrearOrdenModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="form-group">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="CrearOrdenModalLabel">Crear orden de trabajo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body col-12">
+                    <div class="row p-2">
+                        <div class="col-12">
+                            <label> Escoja un tipo</label>
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-12">
+                            <select class="form-control" id="Opciones" width="100%">
+                                <option value="1">Importaciones</option>
+                                <option value="2">Exportaciones</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-12">
+                            <label id="lblBusqueda"> Ingrese numero de volante</label>
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-12">
+                            <input type="text" class="form-control" id="documento" />
+                        </div>
+                    </div>
+
+                </div>
+                @*</div>*@
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-Verde" id="btnCrearOrden" readonly>Crear</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="BuscarOrdenModal" tabindex="-1" role="dialog" aria-labelledby="BuscarOrdenModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="form-group">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="BuscarOrdenModalLabel">Buscar orden de trabajo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body col-12">
+                    <div class="row p-2">
+                        <div class="col-12">
+                            <label> Ingrese su numero de Orden de Trabajo</label>
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-12">
+                            <input type="text" class="form-control" id="documentobuscar" />
+                        </div>
+                    </div>
+
+                </div>
+                @*</div>*@
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-Verde" id="btnBuscarOrden" readonly>Buscar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AddServicioModal" tabindex="-1" role="dialog" aria-labelledby="AddServicioModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="form-group">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="AddServicioModalLabel">Agregar servicio a contenedor</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body col-12">
+                    <div class="row p-2">
+                        <div class="col-12 container-fluid">
+                            <input type="hidden" id="accion" value="Nuevo" />
+                            <input type="hidden" id="itemtmp" value="0" />
+                            <input type="hidden" id="servtmp" value="0" />
+                            <table id="tblServicios" class="table table-striped display compact hover" style="width:100%;">
+                                <thead>
+
+                                </thead>
+                                @*<tbody></tbody>*@
+                            </table>
+                        </div>
+                    </div>
+                   
+                </div>
+                @*</div>*@
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-Verde" id="btnAddServicio">Asignar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="CantidadModal" tabindex="-1" role="dialog" aria-labelledby="CantidadModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="form-group">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="CantidadModalLabel">Asignar cantidad solicitada</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body col-12">
+                    <div class="row p-2">
+                        <div class="col-12">
+                            <label> Ingrese un Valor</label>
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-12">
+                            <input id="cantidadNueva" type="number" min="1" class="form-control"/>
+                        </div>
+                    </div>
+
+
+                </div>
+                @*</div>*@
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-Verde" id="btnAsignarCant" readonly>Asignar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/ordentrabajo.js"></script>

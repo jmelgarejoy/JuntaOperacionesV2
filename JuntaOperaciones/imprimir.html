@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> Esto es una prueba</title>
+    <link rel="stylesheet" href="Content/bootstrap.css" />
+    <style>
+    /*LOADING*/
+    #divLoading {
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        position: fixed;
+        display: block;
+        opacity: 0.7;
+        background-color: #696969;
+        z-index: 99999;
+        text-align: center;
+    }
+
+    #loading-image {
+        position: absolute;
+        /* width: 30%; */
+        height: 200px;
+        top: 40%;
+        left: calc(60% - 200px);
+        z-index: 100;
+    }
+
+    </style>
+</head>
+<body>
+    <div id="divLoading" style="        display: none;
+        background-color: white !important">
+        <img id="loading-image" src="Content/images/loading2.gif" alt="Loading..." />
+    </div>
+    <div class="container-fluid">
+        <header>
+            <div style="        border-bottom: 2px solid darkgreen;">
+                <img src="Content/images/logo.png" alt="Alternate Text" />
+            </div>
+            <input type="button" name="imprimir" value="Imprimir" onclick="window.print();">
+            <table id="tblCabecera" style="        width: 100%">
+                <tr>
+                    <td><h2 id="agente"></h2></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><h2 id="codigoagente"></h2></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><h2 id="fecha"></h2></td>
+                    <td><h2 id="hora"></h2></td>
+                </tr>
+                <tr style="        border: 2px solid black;">
+                    <td colspan="2" style="        FONT-SIZE: 24PX;
+        TEXT-ALIGN: center;
+        COLOR: DARKGREEN;"> Special Services / Servicio Especial</td>
+                </tr>
+
+            </table>
+        </header>
+        <div id="Cabecera" style="        border: 1px solid DARKGREEN">
+            <div class="row">
+                <div class="col-3">Orden de Trabajo:</div>
+                <div class="col-9" id="otrabajo"></div>
+            </div>
+            <div class="row">
+                <div class="col-3">Compañia:</div>
+                <div class="col-9" id="compania">Ransa Comercial S.A.</div>
+            </div>
+            <div class="row">
+                <div class="col-3">División:</div>
+                <div class="col-9" id="division">Ransa Comercial Div.Terminal de Almacenamiento</div>
+            </div>
+            <div class="row">
+                <div class="col-3">Orden de Servicio:</div>
+                <div class="col-9" id="recalada"></div>
+            </div>
+            <div class="row">
+                <div class="col-3">Nave:</div>
+                <div class="col-4" id="nave"></div>
+                <div class="col-3">Nro. Viajes:</div>
+                <div class="col-2" id="nvjes"></div>
+            </div>
+            <div class="row">
+                <div class="col-3">Agente Aduana:</div>
+                <div class="col-2" id="codagentecab"></div>
+                <div class="col-7" id="agentecab"></div>
+            </div>
+            <div class="row">
+                <div class="col-3">Despachador:</div>
+                <div class="col-2" id="coddespachador"></div>
+                <div class="col-7" id="despachador"></div>
+            </div>
+            <div class="row">
+                <div class="col-3">Regimen:</div>
+                <div class="col-9" id="regimen"></div>
+            </div>
+            <div class="row">
+                <div class="col-3">BL o BOOKING:</div>
+                <div class="col-9" id="documento"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div id="Detalle" style="        margin-top: 14px">
+
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div id="Observacion" style="        margin-top: 25px;
+        border-top: 2px dotted black">
+            <div class="row">
+                <div class="col-12">
+                    <p>
+                        A PARTIR DE LA FECHA TODOS LOS RECONOCIMIENTOS PREVIOS Y SERVICIOS POR ROTULADO DEBEN SER
+                        SOLICITADOS OBLIGATORIAMENTE CON 24 HORAS DE ANTICIPACION SÓLO HASTA LAS 19.00 HORAS, DICHOS CONTENEDORES SERÁN POSICIONADOS SÓLO HASTA LAS 9.00
+                        AM. DEL DÍA SIGUIENTE, DE NO PRESENTARSE EL AGENTE HASTA ESA HORA, EL SERVICIO SERÁ REPROGRAMADO A UNA NUEVA HORA EN COORDINACION CON EL AREA OPERATIVA.
+                    </p>
+                    <p>
+                        AVISO: CUANDO LA LINEA SEA CSAV, SERA EXTRICTAMENTE NECESARIO QUE EL CONSIGNATARIO O REPRESENTANTE TENGA EN SU PODER EL CONOCIMIENTO DE EMBARQUE ORIGINAL O ESTE DEBIDAMENTE VISADO POR LOS SRES.TRAMARSA.
+                    </p>
+                    <p>
+                        AVISO: LA MERCADERIA QUE NECESITE RECONOCIMIENTO FISICO O PREVIO SE REALIZARA CON LA PRESENCIA DEL CLIENTE, ADUANAS Y SENASA.
+                    </p>
+                    <p>
+                        AVISO: ES DE ENTERA Y COMPLETA RESPONSABILIDAD DEL AGENTE DE ADUANA COORDINAR LA DEVOLUCION DEL CONTENEDOR VACIO.
+                    </p>
+                    <p>
+                        AVISO: ES DE ENTERA Y COMPLETA RESPONSABILIDAD DEL AGENTE DE ADUANA COORDINAR LA DEVOLUCION DEL CONTENEDOR VACIO.... GRACIAS
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="Scripts/jquery.js"></script>
+    <script src="Scripts/bootstrap.js"></script>
+    <!--<script src="https://getbootstrap.com/docs/4.1/assets/js/vendor/popper.min.js"></script>-->
+    <script src="Librerias/moment/moment.js"></script>
+    <script src="Scripts/imprimirorden.js"></script>
+    <script src="Scripts/helper.js"></script>
+</body>
+</html>

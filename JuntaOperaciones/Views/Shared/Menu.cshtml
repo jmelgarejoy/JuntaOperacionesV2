@@ -1,0 +1,138 @@
+﻿<link href="~/Content/menu.css" rel="stylesheet" />
+@using Newtonsoft.Json;
+@using Ransa.Entidades.Seguridad;
+
+@{
+    var NombreUsuario = (string)Session["Usuario"];
+
+
+}
+<div class="navigation-wrap bg-light start-header start-style">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="navbar navbar-expand-md navbar-light">
+
+                    <a class="navbar-brand" href="#" target="_blank"><img src="~/Content/images/logo.png" alt=""></a>
+
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav ml-auto py-4 py-md-0">
+                            <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4 active">
+                                <a class="nav-link" href="./" role="button">Inicio</a>
+                            </li>
+                            @if (Session["Usuario"] != null)
+                            {
+                                var accesos = JsonConvert.DeserializeObject<List<CE_AccesosUsuario>>((string)Session["Accesos"]);
+
+                                //Menu Junta Operaciones
+                                if (accesos.Count(X => X.NMMENU.Trim() == "Junta de Operaciones") > 0)
+                                {
+                                    <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Junta de Operaciones</a>
+                                        <div class="dropdown-menu">
+
+                                            @foreach (var item in accesos)
+                                            {
+                                                if (item.NMMENU.Trim() == "Junta de Operaciones")
+                                                {
+                                                    <a class="dropdown-item" href=@Url.Action(item.PPVISTA, item.PPCNTRL)>@item.NMMDLO</a>
+                                                };
+                                            }
+                                        </div>
+                                    </li>
+                                };
+                                
+                                //Gestión de Citas DPW
+                                if (accesos.Count(X => X.NMMENU.Trim() == "Gestión de Citas DPW") > 0)
+                                {
+                                    <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Gestión de Citas DPW</a>
+                                        <div class="dropdown-menu">
+
+                                            @foreach (var item in accesos)
+                                            {
+                                                if (item.NMMENU.Trim() == "Gestión de Citas DPW")
+                                                {
+
+                                                    <a class="dropdown-item" href=@Url.Action(item.PPVISTA, item.PPCNTRL)>@item.NMMDLO</a>
+
+
+                                                };
+                                            }
+                                        </div>
+                                    </li>
+                                };
+                                //Menu Procesos
+                                if (accesos.Count(X => X.NMMENU.Trim() == "Procesos") > 0)
+                                {
+                                    <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Procesos</a>
+                                        <div class="dropdown-menu">
+
+                                            @foreach (var item in accesos)
+                                            {
+                                                if (item.NMMENU.Trim() == "Procesos")
+                                                {
+                                                    if (item.PPCNTRL == "ProcesosJO")
+                                                    {
+                                                        <a class="dropdown-item" href=@Url.Action(item.PPVISTA, item.PPCNTRL)>@item.NMMDLO</a>
+                                                    }
+
+                                                };
+                                            }
+                                        </div>
+                                    </li>
+                                };
+                                //Menu Junta Operaciones
+                                if (accesos.Count(X => X.NMMENU.Trim() == "Reportes") > 0)
+                                {
+                                    <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Reportes</a>
+                                        <div class="dropdown-menu">
+
+                                            @foreach (var item in accesos)
+                                            {
+                                                if (item.NMMENU.Trim() == "Reportes")
+                                                {
+                                                    <a class="dropdown-item" href=@Url.Action(item.PPVISTA, item.PPCNTRL)>@item.NMMDLO</a>
+                                                };
+                                            }
+                                        </div>
+                                    </li>
+                                };
+
+                                if ((string)Session["ROL"] == "ADMINISTRADOR")
+                                {
+                                    <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+                                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Seguridad y Accesos</a>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="@Url.Action("Index","Seguridad")">Herramientas de Seguridad</a>
+                                        </div>
+                                    </li>
+                                };
+                                <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                        <img src="~/Content/images/usergreen.png" class="img-fluid" id="icon" alt="User Icon" style="width:20px" />  @NombreUsuario
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="@Url.Action("Salir","Home")">Salir del Sistema</a>
+                                    </div>
+                                </li>
+                            }
+
+                        </ul>
+                    </div>
+
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var UsuarioActual = '@NombreUsuario';
+
+</script>

@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Junta de Operación</title>
+
+
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link href="~/Librerias/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+    <link href="~/Librerias/fontawesome/css/solid.min.css" rel="stylesheet">
+    @* DATATABLE CSS *@
+    <link href="~/Librerias/DataTables/datatables.min.css" rel="stylesheet">
+    <link href="~/Librerias/DataTables/DataTables-1.10.20/css/dataTables.jqueryui.min.css" rel="stylesheet" />
+    <link href="~/Librerias/DataTables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/Librerias/DataTables/Responsive-2.2.3/css/responsive.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Librerias/DataTables/Responsive-2.2.3/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/Librerias/DataTables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Librerias/DataTables/Buttons-1.6.1/css/buttons.bootstrap4.min.css" rel="stylesheet" />
+
+    @* SWEETALERT2 CCS *@
+    <link href="~/Librerias/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+    @* GIJGO COMPONENT CSS *@
+    <link href="~/Librerias/gijgo-component/css/gijgo.min.css" rel="stylesheet" />
+    @* toastMessage CSS *@
+    <link href="~/Librerias/toastMessage/css/jquery.toastmessage.css" rel="stylesheet" />
+    @* PERSONALIZADO CSS *@
+    <link rel="stylesheet" href="~/Content/site.css" />
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Librerias/popper.min.js"></script>
+    @*<script src="https://getbootstrap.com/docs/4.1/assets/js/vendor/popper.min.js"></script>*@
+    @* OTROS JS *@
+
+
+
+</head>
+<body>
+    @Html.AntiForgeryToken()
+    <header>
+        @Html.Partial("~/Views/shared/Menu.cshtml");
+
+    </header>
+
+    <div class="container body-content">
+
+        @RenderBody()
+        <hr />
+
+
+    </div>
+    <div id="divLoading" style="display:none; background-color:white !important">
+        <img id="loading-image" src="~/Content/images/loading2.gif" alt="Loading..." />
+    </div>
+    <footer class="text-center mt-3">
+        <p>&copy; 2020 - Ransa</p>
+    </footer>
+
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+    <script src="~/Librerias/fontawesome/js/fontawesome.min.js"></script>
+    @* DATATABLE JS *@
+
+
+    <script src="~/Librerias/DataTables/datatables.min.js"></script>
+    <script src="~/Librerias/DataTables/DataTables-1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="~/Librerias/DataTables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/Librerias/DataTables/Responsive-2.2.3/js/dataTables.responsive.min.js"></script>
+    <script src="~/Librerias/DataTables/Responsive-2.2.3/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/Librerias/DataTables/DataTables-1.10.20/js/dataTables.rowGroup.min.js"></script>
+    @*<script src="https://cdn.datatables.net/rowgroup/1.1.2/js/dataTables.rowGroup.min.js"></script>*@
+    <script src="~/Librerias/DataTables/Buttons-1.6.1/js/dataTables.buttons.min.js"></script>
+    <script src="~/Librerias/DataTables/JSZip-2.5.0/jszip.min.js"></script>
+    <script src="~/Librerias/DataTables/Buttons-1.6.1/js/buttons.print.min.js"></script>
+    <script src="~/Librerias/DataTables/pdfmake-0.1.36/pdfmake.min.js"></script>
+    <script src="~/Librerias/DataTables/pdfmake-0.1.36/vfs_fonts.js"></script>
+    <script src="~/Librerias/DataTables/Buttons-1.6.1/js/buttons.html5.min.js"></script>
+    <script src="~/Librerias/DataTables/Buttons-1.6.1/js/buttons.bootstrap4.min.js"></script>
+
+
+
+
+    @* SWEETALERT2 JS *@
+    <script src="~/Librerias/sweetalert2/sweetalert2.all.min.js"></script>
+    @* GIJGO COMPONENT JS *@
+    <script src="~/Librerias/gijgo-component/js/gijgo.min.js"></script>
+    <script src="~/Librerias/gijgo-component/js/messages/messages.es-es.js"></script>
+    @* Moment JS *@
+    <script src="~/Librerias/moment/moment.js"></script>
+    @* toastMessage Pluggins *@
+    <script src="~/Librerias/toastMessage/js/jquery.toastmessage.js"></script>
+    <script src="~/Librerias/pristine/pristine.js"></script>
+    @* passwordify Pluggins *@
+    <script src="~/Librerias/passwordify/jquery.mask.min.js"></script>
+    <script src="~/Librerias/passwordify/jquery.passwordify.js"></script>
+    @* PERSONALIZADO JS *@
+    <script src="~/Scripts/menu.js"></script>
+    <script src="~/Scripts/site.js"></script>
+    <script src="~/Scripts/helper.js"></script>
+
+
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

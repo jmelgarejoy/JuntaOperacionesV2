@@ -1,0 +1,38 @@
+﻿
+
+@{
+
+    ViewData["Title"] = "Login";
+    string Mensaje = ViewBag.Error;
+    string mensajeError = Model.Mensaje;
+
+
+}
+
+<link href="~/Content/login.css" rel="stylesheet" />
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+        <!-- Tabs Titles -->
+        <!-- Icon -->
+        <div class="fadeIn first">
+            <img src="~/Content/images/user.png" class="img-fluid" id="icon" alt="User Icon" style="width:85px" />
+        </div>
+
+        <!-- Login Form -->
+        <form method="post" action="@Url.Action("Entrar", "Home")">
+            @Html.AntiForgeryToken()
+            <input type="text" id="Usuario" class="fadeIn second" name="Usuario" placeholder="Usuario">
+            <input type="password" id="Clave" class="fadeIn third" name="Clave" placeholder="Contraseña">
+            <input type="submit" class="fadeIn fourth" value="Entrar">
+
+        </form>
+
+        @if (mensajeError != "")
+        {
+           
+           @Html.Label("Mensaje Error", mensajeError, new { @class = "label-control Red"})
+
+        }
+
+    </div>
+</div>

@@ -1,0 +1,14 @@
+﻿body {
+}
+
+.fa-circulo-verde:before {
+    content: url('images/circulo-verde.png');
+}
+
+.fa-circulo-amarillo:before {
+    content: url('images/circulo-amarillo.png');
+}
+
+.fa-circulo-rojo:before {
+    content: url('images/circulo-rojo.png');
+}

@@ -1,0 +1,346 @@
+﻿* {
+    padding: 0px;
+    margin: 0px;
+}
+
+header {
+    height: 75px;
+}
+
+body {
+    min-height: 100vh !important;
+}
+
+footer {
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 30px;
+    background-color: darkgreen;
+    color: white;
+    position: fixed;
+    width: 100%;
+}
+table.dataTable tr.dtrg-group.dtrg-level-1 td {
+    background-color: #ccefc0 !important;
+}
+
+table.dataTable tr.dtrg-group.dtrg-level-2 td {
+    background-color: #68ad91 !important;
+    font-size: 14px !important;
+    
+}
+    table.dataTable tr.dtrg-group.dtrg-level-2 td > button {
+        float: right;
+        line-height: 0.5 !important;
+    }
+
+    /* Wrapping element */
+    /* Set some basic padding to keep content from hitting the edges */
+    .body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+    height: calc(100vh - 45px);
+    /*max-width: 90% !important;*/
+}
+
+.container {
+    width: 90% !important;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 90%;
+    }
+}
+/*BOTONES PERZONALIZADOS*/
+.btn-Verde {
+    color: #fff;
+    background-color: darkgreen;
+    border-color: darkgreen;
+}
+
+    .btn-Verde:hover {
+        color: #fff;
+        font-weight: bold;
+        background-color: darkgreen;
+        border-color: darkgreen;
+    }
+
+
+/* Columnas botonos DataTable*/
+.CheckboxDT {
+    width: 6px !important;
+}
+
+.BotonEdit {
+    width: 10px !important;
+}
+
+.BotonDelete {
+    width: 10px !important;
+    color: red !important;
+}
+
+.BotonAcceso {
+    width: 10px !important;
+}
+.btnExportar, .btnAgregar {
+    padding: 4px 4px;
+    background-color:darkgreen;
+    color: white;
+    font-size: 14px;
+}
+
+    .btnExportar:hover, .btnAgregar:hover {
+        border: 1px solid #68ad91;
+        color: #68ad91;
+        background-color: white;
+    }
+div.dt-buttons {
+    padding-left: 5px;
+    padding-right:5px;
+    min-width: 80px;
+}
+
+
+.table-header {
+    min-height: 64px;
+    padding-left: 10px;
+    padding-right: 10px;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: flex;
+    -webkit-display: flex;
+    border-bottom: solid 1px #DDDDDD;
+    background-color: darkgreen;
+}
+
+    .table-header .table-title {
+        text-shadow: 2px 2px 6px #6c3669;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .table-header .actions {
+        display: -webkit-flex;
+        margin-left: auto;
+    }
+
+    .table-header .btn-flat {
+        min-width: 36px;
+        padding: 0 8px;
+    }
+
+    .table-header input {
+        margin: 0;
+        height: auto;
+    }
+
+    .table-header i {
+        color: #fff;
+        font-size: 1.5em;
+    }
+
+table.dataTable {
+    padding: 0px !important;
+}
+
+    table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:before, table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > th:first-child:before {
+        background-color: darkgreen;
+    }
+
+.page-item.active .page-link {
+    z-index: 1;
+    color: #fff;
+    background-color: darkgreen;
+    border-color: darkgreen;
+    border-radius: 6px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    color: #1f8731 !important;
+}
+
+table.dataTable.no-footer {
+    border-top: 1px solid darkgreen !important;
+    border-bottom: 1px solid darkgreen !important;
+}
+
+table.dataTable thead tr {
+    background-color: darkgreen;
+    color: white;
+}
+
+table.dataTable thead .sorting:before, table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc:after,
+table.dataTable thead .sorting_asc_disabled:before,
+table.dataTable thead .sorting_asc_disabled:after,
+table.dataTable thead .sorting_desc_disabled:before,
+table.dataTable thead .sorting_desc_disabled:after {
+    position: absolute;
+    bottom: 0.3em;
+    display: block;
+    /*opacity: 0.3;*/
+}
+.LineaDTVerde {
+    background-color: #c6f79a !important;
+}
+.LineaDTAmarilla{
+    background-color: #fff989 !important;
+}
+
+table.dataTable tbody td a {
+    padding: 5px 5px !important;
+}
+.dataTableLayout {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.ColPrincipal {
+    min-width: 200px;
+}
+
+@media screen and (max-width: 991px) {
+    .ColPrincipal {
+        min-width: 150px !important;
+
+    }
+    .container {
+        width: 100% !important;
+    }
+}
+
+/* ESTILO PARA CHECKBOX*/
+/* custom checkbox */
+.checkbox {
+    display: block;
+    position: relative;
+    padding-left: 35px !important;
+    margin-bottom: 20px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+    /* hide the browser's default checkbox */
+    .checkbox input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+/* create custom checkbox */
+.check {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* on mouse-over, add border color */
+.checkbox:hover input ~ .check {
+    border: 2px solid darkgreen;
+}
+
+/* add background color when the checkbox is checked */
+.checkbox input:checked ~ .check {
+    background-color: darkgreen;
+    border: none;
+    border-radius: 6px;
+}
+
+/* create the checkmark and hide when not checked */
+.check:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* show the checkmark when checked */
+.checkbox input:checked ~ .check:after {
+    display: block;
+}
+
+/* checkmark style */
+.checkbox .check:after {
+    left: 7px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+/*LOADING*/
+#divLoading {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: fixed;
+    display: block;
+    opacity: 0.7;
+    background-color: #696969;
+    z-index: 99999;
+    text-align: center;
+}
+
+#loading-image {
+    position: absolute;
+    /* width: 30%; */
+    height: 200px;
+    top: 40%;
+    left: calc(60% - 200px);
+    z-index: 100;
+}
+
+/*MODAL*/
+.modal {
+    overflow-y: scroll;
+}
+
+.modal.show .modal-90 {
+    min-width: 95% !important;
+}
+
+/*ORDENAMIENTO DATATABLE*/
+
+/*table.dataTable thead .sorting {
+    background: url('../Librerias/DataTables/DataTables-1.10.20/images/sort_both.png') no-repeat center right;
+}
+
+table.dataTable thead .sorting_asc {
+    background: url('../Librerias/DataTables/DataTables-1.10.20/images/sort_asc.png') no-repeat center right;
+}
+
+table.dataTable thead .sorting_desc {
+    background: url('../Librerias/DataTables/DataTables-1.10.20/images/sort_desc.png') no-repeat center right;
+}
+
+table.dataTable thead .sorting_asc_disabled {
+    background: url('../Librerias/DataTables/DataTables-1.10.20/images/sort_asc_disabled.png') no-repeat center right;
+}
+
+table.dataTable thead .sorting_desc_disabled {
+    background: url('../Librerias/DataTables/DataTables-1.10.20/images/sort_desc_disabled.png') no-repeat center right;
+}*/ 

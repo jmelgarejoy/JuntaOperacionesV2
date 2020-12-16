@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="CompletarCita">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="usuario" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="clave" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="numerocita" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="contenedor" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="isoType" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="placa" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dni" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ructercerizada" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="precinto1" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="precinto2" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="precinto3" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="precinto4" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="peso" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="tara" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CompletarCitaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CompletarCitaResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="CompletarCitaSoapIn">
+    <wsdl:part name="parameters" element="tns:CompletarCita" />
+  </wsdl:message>
+  <wsdl:message name="CompletarCitaSoapOut">
+    <wsdl:part name="parameters" element="tns:CompletarCitaResponse" />
+  </wsdl:message>
+  <wsdl:portType name="CompletarCitasExtraportuarioSoap">
+    <wsdl:operation name="CompletarCita">
+      <wsdl:input message="tns:CompletarCitaSoapIn" />
+      <wsdl:output message="tns:CompletarCitaSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CompletarCitasExtraportuarioSoap" type="tns:CompletarCitasExtraportuarioSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="CompletarCita">
+      <soap:operation soapAction="http://tempuri.org/CompletarCita" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="CompletarCitasExtraportuarioSoap12" type="tns:CompletarCitasExtraportuarioSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="CompletarCita">
+      <soap12:operation soapAction="http://tempuri.org/CompletarCita" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CompletarCitasExtraportuario">
+    <wsdl:port name="CompletarCitasExtraportuarioSoap" binding="tns:CompletarCitasExtraportuarioSoap">
+      <soap:address location="https://www.dpwc.com.pe/WebServices/CompletarCitasExtraportuario.asmx" />
+    </wsdl:port>
+    <wsdl:port name="CompletarCitasExtraportuarioSoap12" binding="tns:CompletarCitasExtraportuarioSoap12">
+      <soap12:address location="https://www.dpwc.com.pe/WebServices/CompletarCitasExtraportuario.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

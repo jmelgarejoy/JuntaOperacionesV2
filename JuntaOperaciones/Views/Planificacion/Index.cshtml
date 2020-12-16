@@ -1,0 +1,167 @@
+﻿@{
+    ViewData["Title"] = "Importaciones / Exportaciones";
+
+    if (Session["Usuario"] == null)
+    {
+        Response.Redirect("~/Home/Index");
+
+    }
+}
+
+<div style="margin-top: 35px;">
+    <p id="Hora"></p>
+
+    <div class="container-fluid p-1">
+        <div class="row p-2">
+            <h4>Planificación</h4>
+        </div>
+
+        <div class="row p-2">
+            <div class="col-12 col-md-6">Planificación:</div>
+            <div class="col-12 col-md-6 mr-auto">
+                @Html.DropDownList("CboPlanificacion", ViewBag.Pendientes as SelectList, "Seleccione", new { @class = "form-control", width = "100%" })
+
+            </div>
+
+        </div>
+        <div class="row p-2">
+            <div class="col-12 col-md-4">Autoricaciones:</div>
+            <div class="col-12 col-md-2 mr-auto">
+                <button class="btn btn-Verde col-12" id="btnTransporte" data-toggle="modal" data-target="#AutorizacionModal" data-whatever="A1"><i id="userTransporte" class="fas fa-user-clock" style="float:left"></i> Transporte <i class="fas fa-truck-moving" style="float:right"></i></button>
+            </div>
+            <div class="col-12 col-md-2 mr-auto">
+                <button class="btn btn-Verde col-12" id="btnMaquinaria" data-toggle="modal" data-target="#AutorizacionModal" data-whatever="A2"><i id="userMaquinaria" class="fas fa-user-clock" style="float:left"></i> Maquinaria <i class="fas fa-snowplow" style="float:right"></i></button>
+            </div>
+            <div class="col-12 col-md-2 mr-auto">
+                <button class="btn btn-Verde col-12" id="btnOperaciones" data-toggle="modal" data-target="#AutorizacionModal" data-whatever="A3"><i id="userOperaciones" class="fas fa-user-clock" style="float:left"></i> Operaciones <i class="fas fa-cogs" style="float:right"></i></button>
+            </div>
+            <div class="col-12 col-md-2 mr-auto">
+                <button class="btn btn-Verde col-12" id="btnServicios" data-toggle="modal" data-target="#AutorizacionModal" data-whatever="A4"><i id="userServicios" class="fas fa-user-clock" style="float:left"></i> Servicios <i class="fas fa-hand-holding" style="float:right"></i></button>
+            </div>
+
+        </div>
+        <div class="row p-2">
+            <div class="col-none col-md-10">
+
+            </div>
+            <div class="col-12 col-md-2">
+                <button class="btn btn-Verde col-12" id="btnAcuerdos" data-toggle="modal" data-target="#AcuerdosModal"> Ver acuerdos <i class="fas fa-eye" style="float:right"></i></button>
+            </div>
+        </div>
+        <div class="row p-2">
+            <div class="col-12 col-md-10">
+                <h4>Detalle</h4>
+            </div>
+
+        </div>
+
+        <div class="row p-2">
+            <div class="col-12 col-md-1">Fecha Inicio:</div>
+            <div class="col-12 col-md-2 form-control"><span id="fechaInicio"></span></div>
+            <div class="col-12 col-md-1 ">Hora Inicio:</div>
+            <div class="col-12 col-md-2 form-control"><span id="horaInicio"></span></div>
+            <div class="col-12 col-md-1">Fecha Fin:</div>
+            <div class="col-12 col-md-2 form-control"><span id="fechaFin"></span></div>
+            <div class="col-12 col-md-1">Hora Fin:</div>
+            <div class="col-12 col-md-2 form-control"><span id="horaFin"></span></div>
+        </div>
+        <div class="row p-2">
+            <div class="col-12 col-md-1">Turno 3:</div>
+            <div class="col-12 col-md-2 form-control"><span id="turno3"></span></div>
+            <div class="col-12 col-md-1 ">Turno 1:</div>
+            <div class="col-12 col-md-2 form-control"><span id="turno1"></span></div>
+            <div class="col-12 col-md-1">Turno 2:</div>
+            <div class="col-12 col-md-2 form-control"><span id="turno2"></span></div>
+            <div class="col-12 col-md-1">Cant. Contenedores:</div>
+            <div class="col-12 col-md-2 form-control"><span id="contenedores"></span></div>
+        </div>
+    </div>
+    <div class="row p-2">
+        <div class="col-12">
+            <table id="tblDetalle" class="table table-striped display compact hover" style="width:100%;">
+                <thead></thead>
+                @*<tbody></tbody>*@
+            </table>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal AUTORIZACION-->
+<div class="modal fade" id="AutorizacionModal" tabindex="-1" role="dialog" aria-labelledby="AutorizacionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @*<form method="post" action="@Url.Action("AccionesUsuario", "Seguridad")">*@
+            <div class="form-group">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="usuarioModalLabel">Aprobar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="ACCION" name="ACCION" value="" />
+                    <label for="Clave" class="col-form-label">Contraseña de Usuario:</label>
+                    <input type="text" class="form-control" id="Clave" data-val name="Clave">
+                    @*<div class="form-group">*@
+                    <label for="Observacion" class="col-form-label">Onservaciones</label>
+                    <textarea class="form-control" id="Observacion" style="width:100%" maxlength="250"></textarea>
+                    <span id="nCaracteres" style="float:right;font-size: 12px;">250 caracteres</span>
+                </div>
+                @*</div>*@
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" id="btnAprobar" class="btn btn-primary">Aprobar</button>
+                </div>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+<!-- FIN Modal AUTORIZACION-->
+<!-- Modal AUTORIZACION-->
+<div class="modal fade" id="AcuerdosModal" tabindex="-1" role="dialog" aria-labelledby="AcuerdosModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            @*<form method="post" action="@Url.Action("AccionesUsuario", "Seguridad")">*@
+            <div class="form-group">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="AcuerdosModalLabel">Acuerdos</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row p-2">
+                        <label for="Observacion1" class="col-form-label col-2">Observaciones Transporte</label>
+                        <textarea class="form-control col-10" id="Observacion1" style="width:100%" maxlength="250" rows="4" readonly>aaa</textarea>
+                    </div>
+                    <div class="row p-2">
+                        <label for="Observacion2" class="col-form-label col-2">Observaciones Maquinarias</label>
+                        <textarea class="form-control col-10" id="Observacion2" style="width:100%" maxlength="250" rows="4" readonly>aaaaaa</textarea>
+                    </div>
+                    <div class="row p-2">
+                        <label for="Observacion3" class="col-form-label col-2">Observaciones Operaciones</label>
+                        <textarea class="form-control col-10" id="Observacion3" style="width:100%" maxlength="250" rows="4" readonly></textarea>
+                    </div>
+                    <div class="row p-2">
+                        <label for="Observacion4" class="col-form-label col-2">Observaciones Servicios</label>
+                        <textarea class="form-control col-10" id="Observacion4" style="width:100%" maxlength="250" rows="4" readonly></textarea>
+                    </div>
+                </div>
+                @*</div>*@
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+<!-- FIN Modal AUTORIZACION-->
+<script>
+    var AutoR = @ViewBag.Autoriz;
+</script>
+
+<script src="~/Scripts/planificacion.js"></script>

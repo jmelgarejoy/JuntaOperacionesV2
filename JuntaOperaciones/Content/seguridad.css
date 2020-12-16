@@ -1,0 +1,14 @@
+﻿
+
+#TabsSeguridad ul li {
+    padding: 0px !important;
+}
+
+#TabsSeguridad ul li a{
+    padding: 10px !important;
+}
+
+.tab-content {
+    margin: 10px !important;
+}
+

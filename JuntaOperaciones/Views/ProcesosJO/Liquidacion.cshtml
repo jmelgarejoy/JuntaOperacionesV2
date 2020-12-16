@@ -1,0 +1,337 @@
+﻿@{
+    ViewData["Title"] = "Importaciones / Exportaciones";
+
+    if (Session["Usuario"] == null)
+    {
+        Response.Redirect("~/Home/Index");
+
+    }
+}
+
+<style>
+    .row {
+        font-size: 14px;
+    }
+
+    .table {
+        font-size: 12px;
+    }
+
+    .textoTitulo {
+        font-size: 18px;
+        color: #333333;
+        background: #FFFFFF;
+        text-shadow: 2px 2px 0px #FFFFFF, 5px 4px 0px rgba(0,0,0,0.15);
+    }
+</style>
+
+<div style="margin-top: 35px;">
+    <p id="Hora"></p>
+    <div class="container-fluid p-1">
+        <div class="row p-2">
+            <h4>Liquidación Ordenes de Trabajo</h4>
+        </div>
+
+        <div class="row p-2">
+            <div class="col-12">
+                <div class="table-header">
+                    <span class="table-title">Fecha Ordenes de trabajo.</span>
+                    <div class="actions">
+                        <div class="col-9">
+                            <input id="fecha" type="text" class="form-control py-2" />
+                        </div>
+                        <button class="btn col-3" id="btnBuscar"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row p-2 form-horizontal" style="margin-top: 5px">
+            <div class="col-12">
+                <div class="row">
+                    <span class="textoTitulo">IMPORTACIONES</span>
+                </div>
+                <div class="form-group">
+
+                </div>
+
+            </div>
+            <div class="col-12">
+                <div class="container-fluid">
+                    <table id="tblDetalleImpo" class="table table-striped display compact hover" style="        width: 100%;">
+                        <thead>
+
+                        </thead>
+                        @*<tbody></tbody>*@
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row p-2" style="        margin-top: 5px">
+            <span class="textoTitulo">EXPORTACIONES</span>
+            <div class="col-12">
+                <div class="container-fluid">
+                    <table id="tblDetalleExpo" class="table table-striped display compact hover" style="        width: 100%;">
+                        <thead>
+
+                        </thead>
+                        @*<tbody></tbody>*@
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="modal fade" id="LiquidarModal" tabindex="-1" role="dialog" aria-labelledby="LiquidarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-90" role="document">
+        <div class="modal-content">
+
+            <div class="form-group">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="LiquidarModalLabel">Liquidar Orden de Servicio Nº</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body col-12 form-horizontal ">
+                    <input type="hidden" id="ORDEN" value="0" />
+                    <div class="container-fluid">
+                        <div id="DetalleGrid">
+
+                            <table id="tblDetalle" class="table table-striped display compact hover" style="width: 100%;">
+                                <thead>
+
+                                </thead>
+                                @*<tbody></tbody>*@
+                            </table>
+                        </div>
+                        <div id="Liquidar" style="display:none">
+                            <input type="hidden" id="UltimoIndice" />
+                            <input type="hidden" id="CantSolicitadaLiq" />
+                            <input type="hidden" id="PesoSolicitadoLiq" />
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="control-label col-6 col-md-3">Servicio:</label>
+                                    <div class="col-6 col-md-6">
+                                        <input type="hidden" id="codServicioliq" />
+                                        <input class="form-control" type="text" id="ServicioLiq" readonly />
+                                    </div>
+                                    <div class="col-12 col-md-3">
+                                        <button type="button" class="btn btn-Verde col-12" id="btnSiguiente">Siguiente Serv.</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <nav class="col-12">
+                                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                        <a class="nav-item nav-link active" id="nav-Liquidacion-tab" data-toggle="tab" href="#nav-Liquidacion" role="tab" aria-controls="nav-Liquidacion" aria-selected="true" style="padding: 2px 15px !important; width: 50%;">Información de Liquidación</a>
+                                        <a class="nav-item nav-link" id="nav-ServEspeciales-tab" data-toggle="tab" href="#nav-ServEspeciales" role="tab" aria-controls="nav-ServEspeciales" aria-selected="false" style="padding: 2px 15px !important; width: 50%;">Recursos Usados para Servicios Especiales</a>
+                                    </div>
+                                </nav>
+                                <div class="tab-content col-12" id="nav-tabContent" style="padding:10px">
+                                    <div class="tab-pane fade show active" id="nav-Liquidacion" role="tabpanel" aria-labelledby="nav-Liquidacion-tab">
+                                        <div class="form-group" style="display:none">
+                                            <div class="row">
+                                                <label class="control-label col-3 ">Zona:</label>
+                                                <div class="col-9">
+                                                    <input class="form-control" type="text" id="ZonaLiq" value="DM" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <label class="control-label col-3 col-md-3">Cantidad:</label>
+                                                <div class="col-9 col-md-3">
+                                                    <input class="form-control" type="number" id="CantidadLiq" value="0" />
+                                                </div>
+                                                <label class="control-label col-3 col-md-3" style="display:none">Peso:</label>
+                                                <div class="col-9 col-md-3" style="display:none">
+                                                    <input class="form-control" type="number" id="PesoLiq" value="0" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="display:none">
+                                            <div class="row">
+                                                <label class="control-label col-3">Facturar a:</label>
+                                                <div class="col-9">
+                                                    <select class="form-control" id="FacturarLiq" width="100%">
+                                                        <option value="2">Cliente</option>
+                                                        <option value="X">Linea</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="display:none">
+                                            <div class="row">
+                                                <label class="control-label col-3">Cuadrilla:</label>
+                                                <div class="col-9">
+                                                    <select class="form-control" id="CuadrillaLiq" width="100%"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="display:none">
+                                            <div class="row">
+                                                <label class="control-label col-3">Maquinaria:</label>
+                                                <div class="col-9">
+                                                    <select class="form-control" id="Maquinaria" width="100%">
+                                                        <option value="0">NINGUNO</option>
+                                                        <option value="1">STAKER</option>
+                                                        <option value="2">MONTACARGA</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="display:none">
+                                            <div class="row">
+                                                <label class="control-label col-3  col-md-3">Valorizado:</label>
+                                                <div class="col-9  col-md-3">
+                                                    <select class="form-control" id="valorizadoLiq" width="100%">
+                                                        <option value="X">SI</option>
+                                                        <option value="R">NO</option>
+                                                    </select>
+                                                </div>
+                                                <label class="control-label col-3  col-md-3">Importe:</label>
+                                                <div class="col-9  col-md-3">
+                                                    <input class="form-control" type="number" id="trfLiq" value="0" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" style="display:none">
+                                            <div class="row">
+                                                <label class="control-label col-3">Moneda:</label>
+                                                <div class="col-9">
+                                                    <select class="form-control" id="DolarLiq" width="100%">
+                                                        <option value="100">Dolares</option>
+                                                        <option value="1">Soles</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="border:1px solid #000; border-radius: 5px; padding:3px;display:none">
+                                            Solo Reefer
+                                            <div class="row" style="margin-top:4px;">
+                                                <label class="control-label col-3">Fecha INI:</label>
+                                                <div class="col-9 col-md-3">
+                                                    <input class="form-control" type="text" id="FechaINILiq" value="" />
+                                                </div>
+                                                <label class="control-label col-3">Hora:</label>
+                                                <div class="col-9 col-md-3">
+                                                    <input class="form-control" type="text" id="horaINILiq" value="" />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="control-label col-3">Fecha FIN:</label>
+                                                <div class="col-9 col-md-3">
+                                                    <input class="form-control" type="text" id="FechaFINLiq" value="" />
+                                                </div>
+                                                <label class="control-label col-3">Hora:</label>
+                                                <div class="col-9 col-md-3">
+                                                    <input class="form-control" type="text" id="horaFINLiq" value="" />
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <label class="control-label col-3">Observaciones:</label>
+                                                <div class="col-9">
+                                                    <textarea id="observacionesLiq" class="form-control"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade col-12" id="nav-ServEspeciales" role="tabpanel" aria-labelledby="nav-ServEspeciales-tab">
+                                        <div class="form-group" style="border-bottom:1px solid #000; border-radius: 5px; padding:5px;">
+
+                                            <div class="row py-2" style="margin-top:4px;">
+                                                <label class="control-label col-12 col-md-2">Tipo Recurso:</label>
+                                                <div class="col-12 col-md-4">
+                                                    <select class="form-control  form-control-sm" id="tipoRecurso" width="100%">
+                                                        <option value="1">Servido</option>
+                                                    </select>
+                                                </div>
+                                                <label class="control-label col-12 col-md-2">Recurso:</label>
+                                                <div class="col-12 col-md-4">
+                                                    <select class="form-control  form-control-sm" id="Recurso" width="100%">
+                                                        <option value="1">Staker</option>
+                                                        <option value="2">Cuadrilla</option>
+                                                        <option value="3">Montacarga</option>
+                                                    </select>
+                                                </div>
+                                              
+                                            </div>
+                                            <div class="row py-2" style="margin-top:4px;">
+                                              
+                                                <label class="control-label col-12 col-md-2">Tipo de Orden:</label>
+                                                <div class="col-12 col-md-4">
+                                                    <select class="form-control  form-control-sm" id="tipoOrden" width="100%">
+                                                        <option value="1">Interna</option>
+                                                        <option value="2">Terceros</option>
+                                                        <option value="3">Afiliadas</option>
+                                                    </select>
+                                                </div>
+
+                                                <label class="control-label col-12 col-md-2">Cantidad:</label>
+                                                <div class="col-12 col-md-4">
+                                                    <input type="number" class="form-control form-control-sm" id="CANTREC" />
+                                                </div>
+                                            </div>
+                                           
+                                            <div class="row py-2" style="margin-top:4px;">
+                                                <label class="control-label col-12 col-md-2">Observaciones:</label>
+                                                <div class="col-12 col-md-8">
+                                                    <textarea class="form-control form-control-plaintext col-12" id="OBSERVREC" cols="65" rows="2"></textarea>
+                                                </div>
+                                                <button type="button" class="btn btn-Verde col-12 col-md-2" id="btnGuardarRecurso">Guardar Recurso</button>
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group" >
+                                            <div class="col-12">
+                                                <div class="container-fluid">
+                                                    <table id="tblDetalleRecursos" class="table table-striped display compact hover" style="        width: 100%;">
+                                                        <thead>
+
+                                                        </thead>
+                                                        @*<tbody></tbody>*@
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-12 col-md-3">
+                                        @*<button type="button" class="btn btn-Verde col-12" id="btnSiguiente">Siguiente Serv.</button>*@
+                                    </div>
+                                    <div class="col-12 col-md-3"></div>
+                                    <div class="col-12 col-md-3"></div>
+                                    <div class="col-12 col-md-3">
+                                        <button type="button" class="btn btn-Verde col-12" id="btnLiquidar">Liquidar</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*</div>*@
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnVolver">Volver</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/Liquidacion.js"></script>

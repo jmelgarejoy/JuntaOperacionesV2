@@ -1,0 +1,264 @@
+﻿@{
+    ViewData["Title"] = "Seguridad";
+
+    var ListaUsuarios = ViewBag.ListaUsuarios;
+    //var ListaModulos = ViewBag.ListaModulos;
+
+}
+<link href="~/Content/seguridad.css" rel="stylesheet" />
+<div style="margin-top: 35px;">
+    <h3>Usuarios, Modulos y Permisos</h3>
+    <div class="container-fluid">
+        <div id="TabsSeguridad">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#TabUsuarios">Usuarios</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#TabModulos">Modulos</a>
+                </li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+
+                <div class="tab-pane container active" id="TabUsuarios">
+                    <nav class="navbar navbar-expand-sm bg-light navbar-light" style="padding: 10px;">
+
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#usuarioModal" data-whatever="Nuevo">Nuevo Usuario</button>
+                    </nav>
+                    <table id="tblUsuarios" class="table table-striped display compact hover" style="width:100% !important">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="ColPrincipal">Nombre de Usuario</th>
+                                <th scope="col">Nivel de Acceso</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Autoriza</th>
+                                <th scope="col">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
+                </div>
+                <div class="tab-pane container fade" id="TabModulos">
+                    <nav class="navbar navbar-expand-sm bg-light navbar-light" style="padding: 10px;">
+
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#moduloModal" data-whatever="Nuevo">Nuevo Modulo</button>
+                    </nav>
+                    <table id="tblModulos" class="table table-striped display compact" style="width:100% !important">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="ColPrincipal">Nombre Modulo</th>
+                                <th scope="col" class="">Pertenece a Menu</th>
+                                <th scope="col" class="">Llama a Vista</th>
+                                <th scope="col" class="">Llama a Controlador</th>
+                                <th scope="col" > Acciones</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Nav tabs -->
+<!-- Modal USUARIO-->
+<div class="modal fade" id="usuarioModal" tabindex="-1" role="dialog" aria-labelledby="usuarioModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @*<form method="post" action="@Url.Action("AccionesUsuario", "Seguridad")">*@
+                <div class="form-group">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="usuarioModalLabel">Nuevo Usuario</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="ACCION" name="ACCION" value="I" />
+                        <input type="hidden" id="ID" name="ID" value="0" />
+                        <input type="hidden" id="ESTADO" name="ESTADO" value="A" />
+                        <label for="recipient-name" class="col-form-label">Nombre de Usuario:</label>
+                        <input type="text" class="form-control" id="USUARIO" name="USUARIO">
+
+                        @*<div class="form-group">*@
+                        <label for="message-text" class="col-form-label">Nivel de Acceso:</label>
+                        <select class="form-control" id="NIVEL" name="NIVEL">
+                            <option value="ADM">Administrador</option>
+                            <option value="SUP">Supervisor</option>
+                            <option value="US1">Usuario 1</option>
+                        </select>
+                        <label for="message-text" class="col-form-label">Autoriza:</label>
+                        <select class="form-control" id="AUTORIZ" name="AUTORIZ">
+                            <option value="0">Ninguno</option>
+                            <option value="1">Transporte</option>
+                            <option value="2">Maquinaria</option>
+                            <option value="3">Operaciones</option>
+                            <option value="4">Servicios</option>
+                        </select>
+                    </div>
+                    @*</div>*@
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="button" id="btnGuardarUsuario" data-dismiss="modal" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+<!-- FIN Modal USUARIO-->
+<!-- Modal MODULOS-->
+<div class="modal fade" id="moduloModal" tabindex="-1" role="dialog" aria-labelledby="moduloModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @*<form method="post" action="@Url.Action("AccionesModulo", "Seguridad")">*@
+                <div class="form-group">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="moduloModalLabel">Nuevo Módulo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="ACCIONMod" name="ACCION" value="I" />
+                        <input type="hidden" id="IDMod" name="ID" value="0" />
+                        <input type="hidden" id="ESTADOMod" name="ESTADO" value="A" />
+                        <label for="MODULO" class="col-form-label">Nombre de Módulo:</label>
+                        <input type="text" class="form-control" id="MODULO" name="MODULO">
+                        <label for="MENU" class="col-form-label">Pertenece al Menu:</label>
+                        <input type="text" class="form-control" id="MENU" name="MENU">
+                        <label for="VISTA" class="col-form-label">Llama a la Vista:</label>
+                        <input type="text" class="form-control" id="VISTA" name="VISTA">
+                        <label for="CONTROLADOR" class="col-form-label">Llama a la Controlador:</label>
+                        <input type="text" class="form-control" id="CONTROLADOR" name="CONTROLADOR">
+
+
+                    </div>
+                    @*</div>*@
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="button" id="btnGuardarModulo" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+<!--FIN Modal MODULOS-->
+<!-- Modal ACCESOS-->
+<div class="modal fade" id="detalleModal" tabindex="-1" role="dialog" aria-labelledby="detalleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-lg" role="document">
+        <div class="modal-content">
+            @*<form method="post" action="@Url.Action("AccionesModulo", "Seguridad")">*@
+                <div class="form-group">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detalleModalLabel">Accesos de Usuario</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="IDDetalle" name="IDDetalle" value="0" />
+                        <nav class="navbar navbar-expand-sm bg-light navbar-light" style="padding: 10px;">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#AccesoModal" data-whatever="Nuevo">Nuevo Acceso</button>
+                        </nav>
+                        @*<div class="container">*@
+                            <table id="tblAccesos" class="table table-striped display compact" style="width:100% !important">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="ColPrincipal">Modulo</th>
+                                        <th scope="col">Crear</th>
+                                        <th scope="col">Editar</th>
+                                        <th scope="col">Borrar</th>
+                                        <th scope="col">Exportar</th>
+                                        <th scope="col">Imprimir</th>
+                                        <th scope="col" class="">Acciones</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        @*</div>*@
+                        
+                    </div>
+                    @*</div>*@
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+<!--FIN Modal ACCESOS-->
+<!-- Modal USUARIO-->
+<div class="modal fade" id="AccesoModal" tabindex="-1" role="dialog" aria-labelledby="AccesoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+         @*   <form method="post" action="@Url.Action("AccionesAccesos", "Seguridad")">*@
+                <div class="form-group">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="AccesoModalLabel">Nuevo Acesso</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="ACCIONAcce" name="ACCION" value="I" />
+                        <input type="hidden" id="ESTADOAcce" name="ESTADO" value="A" />
+                        <input type="hidden" id="IDUSER" name="IDUSER" value="0" />
+                        <label for="message-text" class="col-form-label">Módulo</label>
+                        <select class="form-control" id="IDMODULO" name="IDMODULO"></select>
+                        <label for="message-text" class="col-form-label">Permite Crear</label>
+                        <select class="form-control" id="INSERT" name="INSERT">
+                            <option value="1">SI</option>
+                            <option value="0">NO</option>
+                        </select>
+                        <label for="message-text" class="col-form-label">Permite Editar</label>
+                        <select class="form-control" id="UPDATE" name="UPDATE">
+                            <option value="1">SI</option>
+                            <option value="0">NO</option>
+                        </select>
+                        <label for="message-text" class="col-form-label">Permite Borrar</label>
+                        <select class="form-control" id="DELETE" name="DELETE">
+                            <option value="1">SI</option>
+                            <option value="0">NO</option>
+                        </select>
+                        <label for="message-text" class="col-form-label">Permite Exportar</label>
+                        <select class="form-control" id="EXPORT" name="EXPORT">
+                            <option value="1">SI</option>
+                            <option value="0">NO</option>
+                        </select>
+                        <label for="message-text" class="col-form-label">Permite Imprimir</label>
+                        <select class="form-control" id="PRINT" name="PRINT">
+                            <option value="1">SI</option>
+                            <option value="0">NO</option>
+                        </select>
+                    </div>
+             
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="button" id="GuardarAcceso" class="btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            @*</form>*@
+        </div>
+    </div>
+</div>
+<!-- FIN Modal USUARIO-->
+
+<script type="text/javascript">
+    var dataUsuarios = @Html.Raw(Json.Encode(ViewBag.ListaUsuarios));
+    //console.log(dataUsuarios);
+    @*var dataModulos = @Html.Raw(Json.Encode(ViewBag.ListaModulos));*@
+    var dataModulos = [];
+</script>
+
+<script src="~/Scripts/seguridad.js"></script>
+
+
