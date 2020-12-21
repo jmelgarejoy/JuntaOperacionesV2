@@ -196,13 +196,13 @@ namespace CompletarCitaDPW
                                                             ActualizaFlg(LstDatosBK[x].IDRCE, "C");
                                                         }
                                                     }
+                                                    else
+                                                    {
+                                                        InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, data, Environment.NewLine, ""));
+                                                    }
 
                                                     ContCita += 1;
-
-
-
                                                 }
-
                                             }
                                             else
                                             {
@@ -370,6 +370,10 @@ namespace CompletarCitaDPW
                                                     {
                                                         ActualizaFlg(LstDatosBK[x].IDRCE, "C");
                                                     }
+                                                }
+                                                else
+                                                {
+                                                    InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, data, Environment.NewLine, ""));
                                                 }
                                                 ContCita += 1;
                                             }
@@ -549,6 +553,10 @@ namespace CompletarCitaDPW
                                     {
                                         ActualizaFlg(item.IDRCE, "C");
                                     }
+                                }
+                                else
+                                {
+                                    InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, data, Environment.NewLine, ""));
                                 }
                             }
                         }
