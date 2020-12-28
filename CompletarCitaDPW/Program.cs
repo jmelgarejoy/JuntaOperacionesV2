@@ -755,7 +755,7 @@ namespace CompletarCitaDPW
             servidorSMTP.Port = 587; // 25;
             servidorSMTP.EnableSsl = true;
             servidorSMTP.UseDefaultCredentials = false;
-            servidorSMTP.Credentials = new System.Net.NetworkCredential("Depositotemporal@ransa.net", "C0m3xR4ns4");
+            servidorSMTP.Credentials = new System.Net.NetworkCredential(ConfigurationManager.AppSettings["CorreoAlerta"].ToString(), ConfigurationManager.AppSettings["PassCorreoAlerta"].ToString());
             Entidad.ConsultaCorreosQueryInput input = new Entidad.ConsultaCorreosQueryInput();
             List<Entidad.ConsultaCorreos> LstCorreos = new List<Entidad.ConsultaCorreos>();
             input.IN_ID_SLN = "CITADPWAUT";
@@ -812,7 +812,7 @@ namespace CompletarCitaDPW
             servidorSMTP.Port = 587; // 25;
             servidorSMTP.EnableSsl = true;
             servidorSMTP.UseDefaultCredentials = false;
-            servidorSMTP.Credentials = new System.Net.NetworkCredential("Depositotemporal@ransa.net", "C0m3xR4ns4");
+            servidorSMTP.Credentials = new System.Net.NetworkCredential(ConfigurationManager.AppSettings["CorreoAlerta"].ToString(), ConfigurationManager.AppSettings["PassCorreoAlerta"].ToString());
             Entidad.ConsultaCorreosQueryInput input = new Entidad.ConsultaCorreosQueryInput();
             List<Entidad.ConsultaCorreos> LstCorreos = new List<Entidad.ConsultaCorreos>();
             input.IN_ID_SLN = "CITADPWAUT";
