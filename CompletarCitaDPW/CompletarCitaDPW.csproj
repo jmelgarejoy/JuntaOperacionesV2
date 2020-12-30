@@ -56,6 +56,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Connected Services\WsEnvioCorreo\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -79,12 +84,20 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Connected Services\WsCompletarCita\CompletarCitasExtraportuario.wsdl" />
+    <None Include="Connected Services\WsEnvioCorreo\CompletarCitaDPW.WsEnvioCorreo.EnvioCorreoDepositoTemporalResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WsEnvioCorreo\CompletarCitaDPW.WsEnvioCorreo.EnvioCorreoInternoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WsEnvioCorreo\enviocorreo.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Connected Services\WsCompletarCita\" />
+    <WCFMetadataStorage Include="Connected Services\WsEnvioCorreo\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Connected Services\WsCompletarCita\configuration91.svcinfo" />
@@ -94,6 +107,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Connected Services\WsCompletarCita\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\WsEnvioCorreo\enviocorreo.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\WsEnvioCorreo\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\WsEnvioCorreo\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\WsEnvioCorreo\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

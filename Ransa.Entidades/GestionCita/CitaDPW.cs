@@ -361,6 +361,11 @@ namespace Ransa.Entidades.GestionCita
         /// </summary>
         [DBField("NUMBKG")]
         public string NUMBKG { get; set; }
+        /// <summary>
+        /// RPTASERV
+        /// </summary>
+        [DBField("RPTASERV")]
+        public string RPTASERV { get; set; }
 
     }
     public class CitaDPWFormInput 

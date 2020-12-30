@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Net.Mail;
 using Entidad = Ransa.Entidades.AlertaCita;
 using EntidadGC = Ransa.Entidades.GestionCita;
@@ -440,65 +441,66 @@ namespace AlertaCita
         }
         public static void AlertaCorreos(string Mensaje, string Cita, string Booking,string TIPALERT)
         {
-            string mensaje = string.Empty;
-            mensaje = "<html> " +
-                        "<body>" +
-                        Mensaje +
-                          "<br/>" +
-                            "Atentamente," +
-                             "<br/>" +
-                            "Sistemas Ransa" +
-                        //"<img src = 'cid:" + Path.Combine("Ransa.PNG") +"' /> " +
-                        "</body>" +
-                      "</html>";
-            MailMessage mensajeCorreo = new MailMessage()
+            try
             {
-                From = new MailAddress("DepositoTemporal@ransa.net", "Deposito Temporal Ransa"),
-                //From = new MailAddress("testintegracion@ransa.net", "Deposito Temporal Ransa"),
-                Subject = "CITAS DPW - DATOS FALTANTES CONTENEDOR: " + Cita + " - " + Booking,
-                IsBodyHtml = true,
-                Body = mensaje,
-                Priority = MailPriority.High,
-            };
+                DataTable dtbl;
+                WsEnvioCorreo.envioCorreoSoapClient wsCorreo = new WsEnvioCorreo.envioCorreoSoapClient();
+                WsEnvioCorreo.ArrayOfString dest = new WsEnvioCorreo.ArrayOfString();
+                WsEnvioCorreo.ArrayOfString copia = new WsEnvioCorreo.ArrayOfString();
+                WsEnvioCorreo.ArrayOfString oculto = new WsEnvioCorreo.ArrayOfString();
+                WsEnvioCorreo.ArrayOfString Arch = new WsEnvioCorreo.ArrayOfString();
 
-            SmtpClient servidorSMTP = new SmtpClient("smtp.office365.com");
-            servidorSMTP.Port = 587; // 25;
-            servidorSMTP.EnableSsl = true;
-            servidorSMTP.UseDefaultCredentials = false;
-            servidorSMTP.Credentials = new System.Net.NetworkCredential("Depositotemporal@ransa.net", "C0m3xR4ns4");
-            EntidadGC.ConsultaCorreosQueryInput input = new EntidadGC.ConsultaCorreosQueryInput();
-            List<EntidadGC.ConsultaCorreos> LstCorreos = new List<EntidadGC.ConsultaCorreos>();
-            if (TIPALERT == "PRE")
-            {
-                input.IN_ID_SLN = "CITADPWPRV";
-            }
-            else if (TIPALERT == "POS")
-            {
-                input.IN_ID_SLN = "CITADPWPST";
-            }
-            else
-            {
-                input.IN_ID_SLN = "CITADPWSTK";
-            }
-            
-            LstCorreos = lgCitaDPW.ConsultaCorreosCitaAutomatica(input);
-            
-            for (int x = 0; x < LstCorreos.Count; x++)
-            {
-                if (LstCorreos[x].TIP_DST.ToString() == "TO")
+                string mensaje = string.Empty;
+                mensaje = "<html> " +
+                            "<body>" +
+                            Mensaje +
+                              "<br/>" +
+                                "Atentamente," +
+                                 "<br/>" +
+                                "Sistemas Ransa" +
+                            //"<img src = 'cid:" + Path.Combine("Ransa.PNG") +"' /> " +
+                            "</body>" +
+                          "</html>";
+
+                EntidadGC.ConsultaCorreosQueryInput input = new EntidadGC.ConsultaCorreosQueryInput();
+                List<EntidadGC.ConsultaCorreos> LstCorreos = new List<EntidadGC.ConsultaCorreos>();
+                if (TIPALERT == "PRE")
                 {
-                    mensajeCorreo.To.Add(LstCorreos[x].DIR_COR.ToString());
+                    input.IN_ID_SLN = "CITADPWPRV";
                 }
-                if (LstCorreos[x].TIP_DST.ToString() == "CC")
+                else if (TIPALERT == "POS")
                 {
-                    mensajeCorreo.CC.Add(LstCorreos[x].DIR_COR.ToString());
+                    input.IN_ID_SLN = "CITADPWPST";
                 }
-                if (LstCorreos[x].TIP_DST.ToString() == "BCC")
+                else
                 {
-                    mensajeCorreo.Bcc.Add(LstCorreos[x].DIR_COR.ToString());
+                    input.IN_ID_SLN = "CITADPWSTK";
                 }
+
+                LstCorreos = lgCitaDPW.ConsultaCorreosCitaAutomatica(input);
+
+                for (int x = 0; x < LstCorreos.Count; x++)
+                {
+                    if (LstCorreos[x].TIP_DST.ToString() == "TO")
+                    {
+                        dest.Add(LstCorreos[x].DIR_COR.ToString());
+                    }
+                    if (LstCorreos[x].TIP_DST.ToString() == "CC")
+                    {
+                        copia.Add(LstCorreos[x].DIR_COR.ToString());
+                    }
+                    if (LstCorreos[x].TIP_DST.ToString() == "BCC")
+                    {
+                        oculto.Add(LstCorreos[x].DIR_COR.ToString());
+                    }
+                }
+                wsCorreo.EnvioCorreoDepositoTemporal("CITAS DPW - ALERTA CITA: " + Cita + " - " + Booking, mensaje, dest, copia, oculto, Arch, WsEnvioCorreo.MailPriority.Normal);
             }
-            servidorSMTP.Send(mensajeCorreo);
+            catch (Exception ex)
+            { }
+           
+         
+
         }
 
         public static decimal ObtenerHorasAlerta(string TipAlert, string DescAlert)

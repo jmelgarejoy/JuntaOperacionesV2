@@ -3,6 +3,7 @@ using Ransa.Framework;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Net.Mail;
 using System.Reflection;
 using Entidad = Ransa.Entidades.GestionCita;
@@ -174,6 +175,10 @@ namespace CompletarCitaDPW
                                                     {
                                                         input.IDRPTASERV = "V";
                                                     }
+                                                    else if (Result.id == "6")
+                                                    {
+                                                        input.IDRPTASERV = "A";
+                                                    }
                                                     else
                                                     {
                                                         input.IDRPTASERV = "F";
@@ -199,6 +204,10 @@ namespace CompletarCitaDPW
                                                     else
                                                     {
                                                         InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, data, Environment.NewLine, ""));
+                                                    }
+                                                    if (Result.id == "6")
+                                                    {
+                                                        AlertaCorreosCita(input.NUMCITA);
                                                     }
 
                                                     ContCita += 1;
@@ -349,6 +358,11 @@ namespace CompletarCitaDPW
                                                 {
                                                     input.IDRPTASERV = "V";
                                                 }
+                                                else if (Result.id == "6")
+                                                {
+                                                    input.IDRPTASERV = "A";
+;                                                }
+
                                                 else
                                                 {
                                                     input.IDRPTASERV = "F";
@@ -374,6 +388,10 @@ namespace CompletarCitaDPW
                                                 else
                                                 {
                                                     InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, data, Environment.NewLine, ""));
+                                                }
+                                                if (Result.id == "6")
+                                                {
+                                                    AlertaCorreosCita(input.NUMCITA);
                                                 }
                                                 ContCita += 1;
                                             }
@@ -532,6 +550,10 @@ namespace CompletarCitaDPW
                                 {
                                     input.IDRPTASERV = "V";
                                 }
+                                else if (Result.id == "6")
+                                {
+                                    input.IDRPTASERV = "A";
+                                }
                                 else
                                 {
                                     input.IDRPTASERV = "F";
@@ -558,6 +580,11 @@ namespace CompletarCitaDPW
                                 {
                                     InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, data, Environment.NewLine, ""));
                                 }
+                                if (Result.id == "6")
+                                {
+                                    AlertaCorreosCita(input.NUMCITA);
+                                }
+
                             }
                         }
                     }
@@ -755,7 +782,7 @@ namespace CompletarCitaDPW
             servidorSMTP.Port = 587; // 25;
             servidorSMTP.EnableSsl = true;
             servidorSMTP.UseDefaultCredentials = false;
-            servidorSMTP.Credentials = new System.Net.NetworkCredential(ConfigurationManager.AppSettings["CorreoAlerta"].ToString(), ConfigurationManager.AppSettings["PassCorreoAlerta"].ToString());
+            servidorSMTP.Credentials = new System.Net.NetworkCredential("Depositotemporal@ransa.net", "C0m3xR4ns4");
             Entidad.ConsultaCorreosQueryInput input = new Entidad.ConsultaCorreosQueryInput();
             List<Entidad.ConsultaCorreos> LstCorreos = new List<Entidad.ConsultaCorreos>();
             input.IN_ID_SLN = "CITADPWAUT";
@@ -777,62 +804,118 @@ namespace CompletarCitaDPW
             }
             servidorSMTP.Send(mensajeCorreo);
         }
+        public static void AlertaCorreosCita(string CITA)
+        {
+            try
+            {
+                DataTable dtbl;
+                WsEnvioCorreo.envioCorreoSoapClient wsCorreo = new WsEnvioCorreo.envioCorreoSoapClient();
+                WsEnvioCorreo.ArrayOfString dest = new WsEnvioCorreo.ArrayOfString();
+                WsEnvioCorreo.ArrayOfString copia = new WsEnvioCorreo.ArrayOfString();
+                WsEnvioCorreo.ArrayOfString oculto = new WsEnvioCorreo.ArrayOfString();
+                WsEnvioCorreo.ArrayOfString Arch = new WsEnvioCorreo.ArrayOfString();
+
+                string mensaje = string.Empty;
+                mensaje = "<html> " +
+                            "<body>" +
+                                "Estimados," +
+                                "<br/>" +
+                                "El presente correo es para informar que la cita " + CITA + " se encuentra cancelada." +
+                                "<br/>" +
+                                "Atentamente," +
+                                 "<br/>" +
+                                "Sistemas Ransa" +
+                            //"<img src = 'cid:" + Path.Combine("Ransa.PNG") +"' /> " +
+                            "</body>" +
+                          "</html>";
+                Entidad.ConsultaCorreosQueryInput input = new Entidad.ConsultaCorreosQueryInput();
+                List<Entidad.ConsultaCorreos> LstCorreos = new List<Entidad.ConsultaCorreos>();
+                input.IN_ID_SLN = "CITADPWAUT";
+
+                LstCorreos = lgCitaDPW.ConsultaCorreosCitaAutomatica(input);
+                for (int x = 0; x < LstCorreos.Count; x++)
+                {
+                    if (LstCorreos[x].TIP_DST.ToString() == "TO")
+                    {
+                        dest.Add(LstCorreos[x].DIR_COR.ToString());
+                    }
+                    if (LstCorreos[x].TIP_DST.ToString() == "CC")
+                    {
+                        copia.Add(LstCorreos[x].DIR_COR.ToString());
+                    }
+                    if (LstCorreos[x].TIP_DST.ToString() == "BCC")
+                    {
+                        oculto.Add(LstCorreos[x].DIR_COR.ToString());
+                    }
+                }
+                wsCorreo.EnvioCorreoDepositoTemporal("CITAS DPW - CANCELADA: " + CITA, mensaje, dest, copia, oculto, Arch, WsEnvioCorreo.MailPriority.Normal);
+            }
+            catch (Exception ex)
+            {
+            }
+
+
+
+
+        }
         public static void AlertaCorreos(string NAVVIAJE, string NROBOOK, string NROCONTE)
         {
-            string mensaje = string.Empty;
-            mensaje = "<html> " +
-                        "<body>" +
-                            "Estimados,"+
-                            "<br/>" +
-                            "El presente correo es para informar que no se cuenta con citas disponibles para los siguientes datos:"+
-                            "<br/>" +
-                            "Nave.Viaje: " + NAVVIAJE +
-                            "<br/>" +
-                            "Booking: "+NROBOOK+
-                              "<br/>" +
-                            "Contenedor: " + NROCONTE +
-                             "<br/>" +
-                            "Atentamente," +
-                             "<br/>" +
-                            "Sistemas Ransa"+
-                        //"<img src = 'cid:" + Path.Combine("Ransa.PNG") +"' /> " +
-                        "</body>" +
-                      "</html>";
-            MailMessage mensajeCorreo = new MailMessage()
+            try
             {
-                From = new MailAddress("DepositoTemporal@ransa.net", "Deposito Temporal Ransa"),
-                //From = new MailAddress("testintegracion@ransa.net", "Deposito Temporal Ransa"),
-                Subject = "CITAS DPW - ALERTA CITA FALTANTE CONTENEDOR: "+ NROCONTE,
-                IsBodyHtml = true,
-                Body = mensaje,
-                Priority = MailPriority.High,
-            };
+                DataTable dtbl;
+                WsEnvioCorreo.envioCorreoSoapClient wsCorreo = new WsEnvioCorreo.envioCorreoSoapClient();
+                WsEnvioCorreo.ArrayOfString dest = new WsEnvioCorreo.ArrayOfString();
+                WsEnvioCorreo.ArrayOfString copia = new WsEnvioCorreo.ArrayOfString();
+                WsEnvioCorreo.ArrayOfString oculto = new WsEnvioCorreo.ArrayOfString();
+                WsEnvioCorreo.ArrayOfString Arch = new WsEnvioCorreo.ArrayOfString();
 
-            SmtpClient servidorSMTP = new SmtpClient("smtp.office365.com");
-            servidorSMTP.Port = 587; // 25;
-            servidorSMTP.EnableSsl = true;
-            servidorSMTP.UseDefaultCredentials = false;
-            servidorSMTP.Credentials = new System.Net.NetworkCredential(ConfigurationManager.AppSettings["CorreoAlerta"].ToString(), ConfigurationManager.AppSettings["PassCorreoAlerta"].ToString());
-            Entidad.ConsultaCorreosQueryInput input = new Entidad.ConsultaCorreosQueryInput();
-            List<Entidad.ConsultaCorreos> LstCorreos = new List<Entidad.ConsultaCorreos>();
-            input.IN_ID_SLN = "CITADPWAUT";
-            LstCorreos=lgCitaDPW.ConsultaCorreosCitaAutomatica(input);
-            for (int x = 0; x < LstCorreos.Count; x++)
-            {
-                if (LstCorreos[x].TIP_DST.ToString() == "TO")
+                string mensaje = string.Empty;
+                mensaje = "<html> " +
+                            "<body>" +
+                                "Estimados," +
+                                "<br/>" +
+                                "El presente correo es para informar que no se cuenta con citas disponibles para los siguientes datos:" +
+                                "<br/>" +
+                                "Nave.Viaje: " + NAVVIAJE +
+                                "<br/>" +
+                                "Booking: " + NROBOOK +
+                                  "<br/>" +
+                                "Contenedor: " + NROCONTE +
+                                 "<br/>" +
+                                "Atentamente," +
+                                 "<br/>" +
+                                "Sistemas Ransa" +
+                            //"<img src = 'cid:" + Path.Combine("Ransa.PNG") +"' /> " +
+                            "</body>" +
+                          "</html>";
+                Entidad.ConsultaCorreosQueryInput input = new Entidad.ConsultaCorreosQueryInput();
+                List<Entidad.ConsultaCorreos> LstCorreos = new List<Entidad.ConsultaCorreos>();
+                input.IN_ID_SLN = "CITADPWAUT";
+
+                LstCorreos = lgCitaDPW.ConsultaCorreosCitaAutomatica(input);
+                for (int x = 0; x < LstCorreos.Count; x++)
                 {
-                    mensajeCorreo.To.Add(LstCorreos[x].DIR_COR.ToString());
+                    if (LstCorreos[x].TIP_DST.ToString() == "TO")
+                    {
+                        dest.Add(LstCorreos[x].DIR_COR.ToString());
+                    }
+                    if (LstCorreos[x].TIP_DST.ToString() == "CC")
+                    {
+                        copia.Add(LstCorreos[x].DIR_COR.ToString());
+                    }
+                    if (LstCorreos[x].TIP_DST.ToString() == "BCC")
+                    {
+                       oculto.Add(LstCorreos[x].DIR_COR.ToString());
+                    }
                 }
-                if (LstCorreos[x].TIP_DST.ToString() == "CC")
-                {
-                    mensajeCorreo.CC.Add(LstCorreos[x].DIR_COR.ToString());
-                }
-                if (LstCorreos[x].TIP_DST.ToString() == "BCC")
-                {
-                    mensajeCorreo.Bcc.Add(LstCorreos[x].DIR_COR.ToString());
-                }
+                wsCorreo.EnvioCorreoDepositoTemporal("CITAS DPW - ALERTA CITA FALTANTE CONTENEDOR: " + NROCONTE, mensaje, dest, copia, oculto, Arch, WsEnvioCorreo.MailPriority.Normal);
             }
-            servidorSMTP.Send(mensajeCorreo);
+            catch (Exception ex)
+            {
+            }
+          
+           
+          
 
         }
         public static List<Entidad.DatosCitaCitaAutomatica> ConsultaDatosCitas(string NROBOOK, string OPEPORT)

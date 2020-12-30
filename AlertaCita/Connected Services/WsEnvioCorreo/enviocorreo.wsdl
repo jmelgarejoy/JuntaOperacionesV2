@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="EnvioCorreoInterno">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CorreoRemitente" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="NombreRemitente" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Asunto" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CuerpoCorreo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ListaDestinatarios" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="ListaCopia" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="ListaOculta" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="ListaArchivos" type="tns:ArrayOfString" />
+            <s:element minOccurs="1" maxOccurs="1" name="Prioridad" type="tns:MailPriority" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="MailPriority">
+        <s:restriction base="s:string">
+          <s:enumeration value="Normal" />
+          <s:enumeration value="Low" />
+          <s:enumeration value="High" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="EnvioCorreoInternoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="EnvioCorreoInternoResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EnvioCorreoDepositoTemporal">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Asunto" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CuerpoCorreo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ListaDestinatarios" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="ListaCopia" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="ListaOculta" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="ListaArchivos" type="tns:ArrayOfString" />
+            <s:element minOccurs="1" maxOccurs="1" name="Prioridad" type="tns:MailPriority" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EnvioCorreoDepositoTemporalResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="EnvioCorreoDepositoTemporalResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="EnvioCorreoInternoSoapIn">
+    <wsdl:part name="parameters" element="tns:EnvioCorreoInterno" />
+  </wsdl:message>
+  <wsdl:message name="EnvioCorreoInternoSoapOut">
+    <wsdl:part name="parameters" element="tns:EnvioCorreoInternoResponse" />
+  </wsdl:message>
+  <wsdl:message name="EnvioCorreoDepositoTemporalSoapIn">
+    <wsdl:part name="parameters" element="tns:EnvioCorreoDepositoTemporal" />
+  </wsdl:message>
+  <wsdl:message name="EnvioCorreoDepositoTemporalSoapOut">
+    <wsdl:part name="parameters" element="tns:EnvioCorreoDepositoTemporalResponse" />
+  </wsdl:message>
+  <wsdl:portType name="envioCorreoSoap">
+    <wsdl:operation name="EnvioCorreoInterno">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Envía correos solo a cuentas del dominio Ransa</wsdl:documentation>
+      <wsdl:input message="tns:EnvioCorreoInternoSoapIn" />
+      <wsdl:output message="tns:EnvioCorreoInternoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EnvioCorreoDepositoTemporal">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Envía correos desde la cuenta DepositoTemporal@ransa.net</wsdl:documentation>
+      <wsdl:input message="tns:EnvioCorreoDepositoTemporalSoapIn" />
+      <wsdl:output message="tns:EnvioCorreoDepositoTemporalSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="envioCorreoSoap" type="tns:envioCorreoSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="EnvioCorreoInterno">
+      <soap:operation soapAction="http://tempuri.org/EnvioCorreoInterno" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EnvioCorreoDepositoTemporal">
+      <soap:operation soapAction="http://tempuri.org/EnvioCorreoDepositoTemporal" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="envioCorreoSoap12" type="tns:envioCorreoSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="EnvioCorreoInterno">
+      <soap12:operation soapAction="http://tempuri.org/EnvioCorreoInterno" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EnvioCorreoDepositoTemporal">
+      <soap12:operation soapAction="http://tempuri.org/EnvioCorreoDepositoTemporal" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="envioCorreo">
+    <wsdl:port name="envioCorreoSoap" binding="tns:envioCorreoSoap">
+      <soap:address location="http://ranmoliispr1.gruporansa.gromero.net:8059/enviocorreo.asmx" />
+    </wsdl:port>
+    <wsdl:port name="envioCorreoSoap12" binding="tns:envioCorreoSoap12">
+      <soap12:address location="http://ranmoliispr1.gruporansa.gromero.net:8059/enviocorreo.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
