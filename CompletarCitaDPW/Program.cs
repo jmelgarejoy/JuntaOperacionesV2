@@ -207,7 +207,7 @@ namespace CompletarCitaDPW
                                                     }
                                                     if (Result.id == "6")
                                                     {
-                                                        AlertaCorreosCita(input.NUMCITA);
+                                                        AlertaCorreosCitaCancelada(input.NUMCITA);
                                                     }
 
                                                     ContCita += 1;
@@ -389,10 +389,21 @@ namespace CompletarCitaDPW
                                                 {
                                                     InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, data, Environment.NewLine, ""));
                                                 }
-                                                if (Result.id == "6")
+
+                                                switch (Result.id)
                                                 {
-                                                    AlertaCorreosCita(input.NUMCITA);
+                                                    case "6":
+                                                        AlertaCorreosCitaCancelada(input.NUMCITA);
+                                                        break;
+                                                    case "14":
+                                                        AlertaCorreosErrorCita(input.NUMCITA, Result.descripcion);
+                                                        break;
                                                 }
+                                                
+                                                //if (Result.id == "6")
+                                                //{
+                                                //    AlertaCorreosCita(input.NUMCITA);
+                                                //}
                                                 ContCita += 1;
                                             }
                                         }
@@ -582,7 +593,7 @@ namespace CompletarCitaDPW
                                 }
                                 if (Result.id == "6")
                                 {
-                                    AlertaCorreosCita(input.NUMCITA);
+                                    AlertaCorreosCitaCancelada(input.NUMCITA);
                                 }
 
                             }
@@ -804,7 +815,7 @@ namespace CompletarCitaDPW
             }
             servidorSMTP.Send(mensajeCorreo);
         }
-        public static void AlertaCorreosCita(string CITA)
+        public static void AlertaCorreosCitaCancelada(string CITA)
         {
             try
             {
@@ -852,12 +863,64 @@ namespace CompletarCitaDPW
             }
             catch (Exception ex)
             {
+                InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, ex.Message, Environment.NewLine, ex.StackTrace));
             }
-
-
-
-
         }
+
+        public static void AlertaCorreosErrorCita(string CITA, string ERROR)
+        {
+            try
+            {
+                //DataTable dtbl;
+                WsEnvioCorreo.envioCorreoSoapClient wsCorreo = new WsEnvioCorreo.envioCorreoSoapClient();
+                WsEnvioCorreo.ArrayOfString dest = new WsEnvioCorreo.ArrayOfString();
+                WsEnvioCorreo.ArrayOfString copia = new WsEnvioCorreo.ArrayOfString();
+                WsEnvioCorreo.ArrayOfString oculto = new WsEnvioCorreo.ArrayOfString();
+                WsEnvioCorreo.ArrayOfString Arch = new WsEnvioCorreo.ArrayOfString();
+
+                string mensaje = string.Empty;
+                mensaje = "<html> " +
+                            "<body>" +
+                                "Estimados," +
+                                "<br/>" +
+                                "El presente correo es para informar que la cita " + CITA + " presenta el siguiente error: <br/>" +
+                                ERROR +
+                                "<br/>" +
+                                "<br/>" +
+                                "Atentamente," +
+                                 "<br/>" +
+                                "Sistemas Ransa" +
+                            //"<img src = 'cid:" + Path.Combine("Ransa.PNG") +"' /> " +
+                            "</body>" +
+                          "</html>";
+                Entidad.ConsultaCorreosQueryInput input = new Entidad.ConsultaCorreosQueryInput();
+                List<Entidad.ConsultaCorreos> LstCorreos = new List<Entidad.ConsultaCorreos>();
+                input.IN_ID_SLN = "CITADPWAUT";
+
+                LstCorreos = lgCitaDPW.ConsultaCorreosCitaAutomatica(input);
+                for (int x = 0; x < LstCorreos.Count; x++)
+                {
+                    if (LstCorreos[x].TIP_DST.ToString() == "TO")
+                    {
+                        dest.Add(LstCorreos[x].DIR_COR.ToString());
+                    }
+                    if (LstCorreos[x].TIP_DST.ToString() == "CC")
+                    {
+                        copia.Add(LstCorreos[x].DIR_COR.ToString());
+                    }
+                    if (LstCorreos[x].TIP_DST.ToString() == "BCC")
+                    {
+                        oculto.Add(LstCorreos[x].DIR_COR.ToString());
+                    }
+                }
+                wsCorreo.EnvioCorreoDepositoTemporal("CITAS DPW - ERROR: " + CITA, mensaje, dest, copia, oculto, Arch, WsEnvioCorreo.MailPriority.Normal);
+            }
+            catch (Exception ex)
+            {
+                InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, ex.Message, Environment.NewLine, ex.StackTrace));
+            }
+        }
+
         public static void AlertaCorreos(string NAVVIAJE, string NROBOOK, string NROCONTE)
         {
             try
@@ -912,11 +975,8 @@ namespace CompletarCitaDPW
             }
             catch (Exception ex)
             {
+                InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, ex.Message, Environment.NewLine, ex.StackTrace));
             }
-          
-           
-          
-
         }
         public static List<Entidad.DatosCitaCitaAutomatica> ConsultaDatosCitas(string NROBOOK, string OPEPORT)
         {

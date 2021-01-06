@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Ransa.Framework;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
-using System.Net.Mail;
+using System.Reflection;
 using Entidad = Ransa.Entidades.AlertaCita;
 using EntidadGC = Ransa.Entidades.GestionCita;
 using Logica = Ransa.LogicaNegocios.AlertaCita;
@@ -27,6 +28,7 @@ namespace AlertaCita
             }
             catch (Exception ex)
             {
+                InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, ex.Message, Environment.NewLine, ex.StackTrace));
             }
         }
         public static void EnvioAlerta(DateTime FechaActual)
@@ -95,7 +97,7 @@ namespace AlertaCita
                                                   "Faltan " + span.Hours.ToString() + " horas para el vencimiento del cut off de la cita " + item.NUMCITA +
                                                   "<br/>";
 
-                                            AlertaCorreos(Mensaje, item.NUMCITA, item.NUMBKG,input.TIPALERT);
+                                            AlertaCorreos(Mensaje, item.NUMCITA, item.NUMBKG, input.TIPALERT);
                                         }
                                     }
                                     else
@@ -108,7 +110,7 @@ namespace AlertaCita
                                             DateTime FechaMaxAlert = FechaCutOff.AddHours(double.Parse(Halert.ToString()));
                                             if (FechaActual < FechaMaxAlert)
                                             {
-                                                if (FechaCAlertAnt.AddHours(1).AddMinutes(3) > FechaActual  &&  FechaCAlertAnt.AddHours(1).AddMinutes(-3) < FechaActual)// //
+                                                if (FechaCAlertAnt.AddHours(1).AddMinutes(3) > FechaActual && FechaCAlertAnt.AddHours(1).AddMinutes(-3) < FechaActual)// //
                                                 {
                                                     string data = "";
                                                     Entidad.EnvioAlertaQueryInput input = new Entidad.EnvioAlertaQueryInput();
@@ -154,12 +156,15 @@ namespace AlertaCita
                         }
                         catch (Exception ex)
                         {
+                            InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, ex.Message, Environment.NewLine, ex.StackTrace));
                         }
                     }
                 }
             }
             catch (Exception ex)
-            { }
+            {
+                InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, ex.Message, Environment.NewLine, ex.StackTrace));
+            }
           
         }
         public static void EnvioAlertaStk(DateTime FechaActual)
@@ -167,7 +172,7 @@ namespace AlertaCita
             try
             {
                 List<Entidad.CitasPendientesAlert> LstAlert = new List<Entidad.CitasPendientesAlert>();
-                LstAlert=ConsultaPendienteAlertStk();
+                LstAlert = ConsultaPendienteAlertStk();
                 string Mensaje = "";
                 if (LstAlert.Count > 0)
                 {
@@ -223,7 +228,7 @@ namespace AlertaCita
                                             }
                                             Mensaje = "Estimados," +
                                               "<br/>" +
-                                                  "La fecha de la cita "+item.NUMCITA+" es "+ span.Hours.ToString() + " horas mayor que la fecha de stacking " +
+                                                  "La fecha de la cita " + item.NUMCITA + " es " + span.Hours.ToString() + " horas mayor que la fecha de stacking " +
                                               "<br/>";
 
                                             AlertaCorreos(Mensaje, item.NUMCITA, item.NUMBKG, input.TIPALERT);
@@ -233,13 +238,16 @@ namespace AlertaCita
                             }
                         }
                         catch (Exception ex)
-                        { }
+                        {
+                            InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, ex.Message, Environment.NewLine, ex.StackTrace));
+                        }
                     }
                 }
             }
             catch (Exception ex)
-            { }
-            
+            {
+                InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, ex.Message, Environment.NewLine, ex.StackTrace));
+            }
         }
         public static void EnvioPrimeraAlertaStk(DateTime FechaActual)
         {

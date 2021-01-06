@@ -246,10 +246,10 @@ function CargarCitas(id, accion) {
             '<th scope="col">Contenedor</th>' +
             '<th scope="col">Booking</th>' +
             '<th scope="col">Placa</th>' +
-            '<th scope="col">Doc Chofer</th>' +
+            '<th scope="col">Doc. Chofer</th>' +
             '<th scope="col">Precinto</th>' +
             '<th scope="col">Fecha envío</th>' +
-            '<th scope="col">Rpta servidor</th>' +
+            '<th scope="col">Respuesta DPW</th>' +
             '<th scope="col">Acciones</th>' +
             '</tr>';
         $('#tblDetalle thead').empty();
@@ -273,8 +273,8 @@ function CargarCitas(id, accion) {
                 { data: 'NROPLACA' },
                 { data: 'DOCCHFR' },
                 { data: 'NROPREC1' },
-                { data: 'RPTASERV' },
                 { data: 'FECREG' },
+                { data: 'RPTASERV' },
                 {
                     "mData": null,
                     "bSortable": false,
