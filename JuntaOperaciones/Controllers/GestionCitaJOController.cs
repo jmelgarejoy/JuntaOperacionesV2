@@ -1,7 +1,6 @@
 ﻿using System;
 using OfficeOpenXml;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Entidad = Ransa.Entidades.GestionCita;

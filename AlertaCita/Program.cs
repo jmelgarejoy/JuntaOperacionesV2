@@ -25,6 +25,7 @@ namespace AlertaCita
                 EnvioAlertaStk(FechaActual);
                 EnvioPrimeraAlerta(FechaActual);
                 EnvioAlerta(FechaActual);
+                EnvioAlertaCitasVencidas(FechaActual);
             }
             catch (Exception ex)
             {
@@ -148,11 +149,7 @@ namespace AlertaCita
                                         }
                                     }
                                 }
-
-
-
                             }
-
                         }
                         catch (Exception ex)
                         {
@@ -165,8 +162,41 @@ namespace AlertaCita
             {
                 InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, ex.Message, Environment.NewLine, ex.StackTrace));
             }
-          
         }
+
+        public static void EnvioAlertaCitasVencidas(DateTime FechaActual)
+        {
+            List<Entidad.CitasPendientesAlert> LstAlert = new List<Entidad.CitasPendientesAlert>();
+            LstAlert = ConsultaPendienteAlert();
+
+            try
+            {
+                string data = "";
+                Entidad.EnvioAlertaQueryInput input = new Entidad.EnvioAlertaQueryInput();
+                input.NUMID04 = System.Guid.NewGuid().ToString();
+                //input.NUMID01 = item.NUMID;
+                //input.NUMCITA = item.NUMCITA;
+                //input.HRSVEN = (DIFHORAS).ToString();
+                input.TIPALERT = "STK";
+                input.USRREG = "ENV_AUT";
+                input.USERMOD = "ENV_AUT";
+                input.FECREG = (DateTime.Now.ToString("yyyyMMdd"));
+                input.FECMOD = (DateTime.Now.ToString("yyyyMMdd"));
+                input.HRSREG = (DateTime.Now.ToString("HHmmss"));
+                input.HRSMOD = (DateTime.Now.ToString("HHmmss"));
+                input.SESTRG = "A";
+                input.ACCION = "I";
+                input.OPEPORT = ConfigurationManager.AppSettings["OPEPORT"]; //RUC DPW
+                data = lgCitaAlert.AccionesEnvioAlert(input);
+            }
+            catch(Exception ex)
+            {
+
+            }
+
+            
+        }
+
         public static void EnvioAlertaStk(DateTime FechaActual)
         {
             try
@@ -382,9 +412,7 @@ namespace AlertaCita
                                                     "<br/>";
 
                                             AlertaCorreos(Mensaje, item.NUMCITA, item.NUMBKG, input.TIPALERT);
-
                                         }
-
                                     }
                                 }
                                 else
@@ -433,8 +461,6 @@ namespace AlertaCita
                                         }
                                     }
                                 }
-                               
-
                             }
                         }
                         catch (Exception ex)
@@ -444,7 +470,8 @@ namespace AlertaCita
                 }
             }
             catch (Exception ex)
-            { }
+            { 
+            }
             
         }
         public static void AlertaCorreos(string Mensaje, string Cita, string Booking,string TIPALERT)
