@@ -7,17 +7,21 @@ using System.Data;
 using System.Net.Mail;
 using System.Reflection;
 using Entidad = Ransa.Entidades.GestionCita;
+using EntidadAlert = Ransa.Entidades.AlertaCita;
 using Logica = Ransa.LogicaNegocios.GestionCita;
+using LogicaAlert = Ransa.LogicaNegocios.AlertaCita;
 namespace CompletarCitaDPW
 {
     class Program
     {
+        static LogicaAlert.AlertaCita lgCitaAlert = new LogicaAlert.AlertaCita();
         static Logica.CitaDPW lgCitaDPW = new Logica.CitaDPW();
         static Logica.Cita lgCita = new Logica.Cita();
         static void Main(string[] args)
         {
             try
             {
+                InsertLog.Instanse.Insert("--- Inicio de Proceso ---");
                 List<Entidad.BKCitaAutomatica> LstBK = new List<Entidad.BKCitaAutomatica>();
                 ValidarCitas();
                 CompletarCitasAsignadas();
@@ -170,7 +174,7 @@ namespace CompletarCitaDPW
                                                     input.TARA = decimal.Parse(LstDatosBK[x].TARACONTE);
                                                     input.PESO = decimal.Parse(LstDatosBK[x].PESONETO);
                                                     input.TIPENV = "A";
-                                                    input.RPTASERV = Result.descripcion;
+                                                    input.RPTASERV = Result.id +" : "+ Result.descripcion;
                                                     if (Result.id == "0")
                                                     {
                                                         input.IDRPTASERV = "V";
@@ -205,10 +209,22 @@ namespace CompletarCitaDPW
                                                     {
                                                         InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, data, Environment.NewLine, ""));
                                                     }
-                                                    if (Result.id == "6")
+                                                    if (Result.id != "0")
                                                     {
-                                                        AlertaCorreosCitaCancelada(input.NUMCITA);
+                                                        if (Result.id == "6")
+                                                        {
+                                                            AlertaCorreosCitaCancelada(input.NUMCITA);
+                                                        }
+                                                        else
+                                                        {
+                                                            AlertaCorreosErrorCita(input.NUMCITA, Result.descripcion);
+                                                        }
+                                                        RegistrarAlerta("", input.NUMCITA);
                                                     }
+                                                    //if (Result.id == "6")
+                                                    //{
+                                                    //    AlertaCorreosCitaCancelada(input.NUMCITA);
+                                                    //}
 
                                                     ContCita += 1;
                                                 }
@@ -353,7 +369,7 @@ namespace CompletarCitaDPW
                                                 input.TARA = decimal.Parse(LstDatosBK[x].TARACONTE);
                                                 input.PESO = decimal.Parse(LstDatosBK[x].PESONETO);
                                                 input.TIPENV = "A";
-                                                input.RPTASERV = Result.descripcion;
+                                                input.RPTASERV = Result.id + " : " + Result.descripcion;
                                                 if (Result.id == "0")
                                                 {
                                                     input.IDRPTASERV = "V";
@@ -390,16 +406,19 @@ namespace CompletarCitaDPW
                                                     InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, data, Environment.NewLine, ""));
                                                 }
 
-                                                switch (Result.id)
+                                                if (Result.id != "0")
                                                 {
-                                                    case "6":
+                                                    if (Result.id == "6")
+                                                    {
                                                         AlertaCorreosCitaCancelada(input.NUMCITA);
-                                                        break;
-                                                    case "14":
+                                                    }
+                                                    else
+                                                    {
                                                         AlertaCorreosErrorCita(input.NUMCITA, Result.descripcion);
-                                                        break;
+                                                    }
+                                                    RegistrarAlerta("", input.NUMCITA);
                                                 }
-                                                
+
                                                 //if (Result.id == "6")
                                                 //{
                                                 //    AlertaCorreosCita(input.NUMCITA);
@@ -422,6 +441,29 @@ namespace CompletarCitaDPW
             {
                 InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, ex.Message, Environment.NewLine, ex.StackTrace));
             }
+
+            InsertLog.Instanse.Insert("--- Fin de Proceso ---");
+        }
+        public static void RegistrarAlerta(string NumID,string Numcita)
+        {
+            
+            string data = "";
+            EntidadAlert.EnvioAlertaQueryInput input = new EntidadAlert.EnvioAlertaQueryInput();
+            input.NUMID04 = System.Guid.NewGuid().ToString();
+            input.NUMID01 = NumID;
+            input.NUMCITA = Numcita;
+            input.HRSVEN = "0";
+            input.TIPALERT = "ERR";
+            input.USRREG = "ENV_AUT";
+            input.USERMOD = "ENV_AUT";
+            input.FECREG = (DateTime.Now.ToString("yyyyMMdd"));
+            input.FECMOD = (DateTime.Now.ToString("yyyyMMdd"));
+            input.HRSREG = (DateTime.Now.ToString("HHmmss"));
+            input.HRSMOD = (DateTime.Now.ToString("HHmmss"));
+            input.SESTRG = "A";
+            input.ACCION = "I";
+            input.OPEPORT = ConfigurationManager.AppSettings["OPEPORT"]; //RUC DPW
+            data = lgCitaAlert.AccionesEnvioAlert(input);
         }
         public static void CompletarCitasAsignadas()
         {
@@ -556,7 +598,7 @@ namespace CompletarCitaDPW
                                 input.TARA = decimal.Parse(item.TARACONTE);
                                 input.PESO = decimal.Parse(item.PESONETO);
                                 input.TIPENV = "A";
-                                input.RPTASERV = Result.descripcion;
+                                input.RPTASERV = Result.id + " : " +Result.descripcion;
                                 if (Result.id == "0")
                                 {
                                     input.IDRPTASERV = "V";
@@ -591,10 +633,31 @@ namespace CompletarCitaDPW
                                 {
                                     InsertLog.Instanse.Insert(string.Format(@"Error en el metodo: {0}{1}Mensaje Error:{2}{3}Detalle Error:{4}", MethodBase.GetCurrentMethod().Name, Environment.NewLine, data, Environment.NewLine, ""));
                                 }
-                                if (Result.id == "6")
+                                if (Result.id != "0")
                                 {
-                                    AlertaCorreosCitaCancelada(input.NUMCITA);
+                                    if (Result.id == "6")
+                                    {
+                                        AlertaCorreosCitaCancelada(input.NUMCITA);
+                                    }
+                                    else
+                                    {
+                                        AlertaCorreosErrorCita(input.NUMCITA, Result.descripcion);
+                                    }
+                                    RegistrarAlerta("", input.NUMCITA);
                                 }
+                                //switch (Result.id)
+                                //{
+                                //    case "6":
+                                //        AlertaCorreosCitaCancelada(input.NUMCITA);
+                                //        break;
+                                //    case "14":
+                                //        AlertaCorreosErrorCita(input.NUMCITA, Result.descripcion);
+                                //        break;
+                                //}
+                                //if (Result.id == "6")
+                                //{
+                                //    AlertaCorreosCitaCancelada(input.NUMCITA);
+                                //}
 
                             }
                         }

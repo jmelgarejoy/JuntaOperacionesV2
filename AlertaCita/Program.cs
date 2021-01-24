@@ -25,7 +25,7 @@ namespace AlertaCita
                 EnvioAlertaStk(FechaActual);
                 EnvioPrimeraAlerta(FechaActual);
                 EnvioAlerta(FechaActual);
-                EnvioAlertaCitasVencidas(FechaActual);
+                //EnvioAlertaCitasVencidas(FechaActual);
             }
             catch (Exception ex)
             {
