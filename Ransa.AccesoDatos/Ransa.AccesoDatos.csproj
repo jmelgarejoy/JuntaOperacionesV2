@@ -60,6 +60,7 @@
     <Compile Include="Procesos\OrdenTrabajo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Recursos\CadenaConexion.Designer.cs" />
+    <Compile Include="Reporte\Reporte.cs" />
     <Compile Include="Seguridad\CD_Seguridad.cs" />
     <Compile Include="Utilitario\Contexto.cs" />
     <Compile Include="Utilitario\DB2Helper.cs" />

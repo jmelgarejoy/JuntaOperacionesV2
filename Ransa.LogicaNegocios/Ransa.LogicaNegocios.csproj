@@ -56,6 +56,7 @@
     <Compile Include="Login\Usuario.cs" />
     <Compile Include="Procesos\OrdenTrabajo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reporte\Reporte.cs" />
     <Compile Include="Seguridad\CL_Seguridad.cs" />
   </ItemGroup>
   <ItemGroup />

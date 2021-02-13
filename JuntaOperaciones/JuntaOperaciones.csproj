@@ -160,6 +160,11 @@
     <Compile Include="Models\UsuarioQueryInputModel.cs" />
     <Compile Include="Models\UsuariosModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resource1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Connected Services\MailService\enviocorreo.disco" />
@@ -211,6 +216,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="imagenes\logo.png" />
     <Content Include="Librerias\dashboard\animate.css\animate.css" />
     <Content Include="Librerias\dashboard\animate.css\animate.min.css" />
     <Content Include="Librerias\dashboard\animate.css\gulpfile.js" />
@@ -2472,6 +2478,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\ordentrabajoliquidacion.js" />
+    <Content Include="Scripts\reporte.js" />
     <Content Include="Scripts\reportesot.js" />
     <Content Include="Scripts\menu.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
@@ -2589,6 +2596,7 @@
     <Content Include="Views\CitaDPWJO\Index.cshtml" />
     <Content Include="Views\GestionCitaJO\Index.cshtml" />
     <Content Include="Views\MonitorAlertaJO\Index.cshtml" />
+    <Content Include="Views\Reportes\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -2631,6 +2639,12 @@
   <ItemGroup>
     <WCFMetadataStorage Include="Connected Services\MailService\" />
     <WCFMetadataStorage Include="Connected Services\WsCompletarCita\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
