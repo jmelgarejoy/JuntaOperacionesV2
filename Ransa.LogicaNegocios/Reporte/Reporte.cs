@@ -34,5 +34,14 @@ namespace Ransa.LogicaNegocios.Reporte
         {
             return ejecuta.ConsultaEmbarqueDPW(parametros);
         }
+        public List<Entidad.GetReporteDetalladoEmbarque> ConsultaDetalleEmbarque(Entidad.GetReporteDetalladoQueryInput parametros)
+        {
+            return ejecuta.ConsultaDetalleEmbarque(parametros);
+        }
+        public List<Entidad.GetReporteDetalladoDesembarque> ConsultaDetalleDescarga(Entidad.GetReporteDetalladoQueryInput parametros)
+        {
+            return ejecuta.ConsultaDetalleDescarga(parametros);
+        }
+
     }
 }

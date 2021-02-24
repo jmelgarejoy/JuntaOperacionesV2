@@ -44,7 +44,6 @@
 <div class="modal fade" id="filtroModal" tabindex="-1" role="dialog" aria-labelledby="FiltroModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-
             <div class="form-group">
                 <div class="modal-header">
                     <h5 class="modal-title" id="FiltroModalLabel">Planificación de transportes</h5>
@@ -52,27 +51,68 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                
-                <form id="frmFiltrosPlanTrans"  style="display:none">
-                   
-                        <div class="modal-header">
-                            <h6 class="modal-title">Filtros</h6>
+
+                <form id="frmFiltrosPlanTrans" style="display:none">
+
+                    <div class="modal-header">
+                        <h6 class="modal-title">Filtros</h6>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" checked="checked" name="Filtro" id="radioFecha" data-filtro="Fecha">
+                            <label class="form-check-label"  for="radioFecha">Fecha</label>
                         </div>
-                        <div class="form-inline">
-                            
-                                <div class="form-group col-8 mb-2">
-
-                                    <label for="FechaPlanTrans" class="col-form-label col-12 col-md-3">Fecha: </label>
-                                   
-                                        <input id="FechaPlanTrans" type="text" class="form-control col-12 col-md-9" />
-                                  
-                                </div>
-
-                                <button class="btn btn-success mb-2" type="button" style="" id="btnDescargarPlanTransp"><i class="fas fa-download"></i>Descargar</button>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="Filtro" id="radioOS" data-filtro="OS">
+                            <label class="form-check-label" for="radioOS">Orden Servicio</label>
                         </div>
-                      
-                   
 
+                    </div>
+                    <div class="form-inline"  id="Contenedor">
+                        <div id="FiltroFecha" class="form-group col-8 mb-2" >
+                            <label for="FechaPlanTrans" class="col-form-label col-12 col-md-3">Fecha: </label>
+                            <input id="FechaPlanTrans" type="text"  class="form-control col-12 col-md-9" />
+                        </div>
+                        <div id="FiltroOS" class="form-group col-8 mb-2" style="display:none">
+                            <label for="OrdenServ" class="col-form-label col-12 col-md-3">Orden Servicio: </label>
+                            <input id="OrdenServ" type="text" class="form-control col-12 col-md-9" />
+                        </div>
+                        <button class="btn btn-success mb-2" type="button" style="" id="btnDescargarPlanTransp"><i class="fas fa-download"></i>Descargar</button>
+                    </div>
+                </form>
+                <form id="frmFiltrosPlanTransDetalle" style="display:none">
+                    <div class="modal-header">
+                        <h6 class="modal-title">Filtros</h6>
+                    </div>
+                    <div class="form-inline">
+                        <label for="FechaPlanTransDet" class="col-form-label col-6 col-sm-3">Fecha: </label>
+                        <input id="FechaPlanTransDet" type="text" class="form-control col-6 col-sm-6" />
+                    </div>
+                    <div class="form-inline">
+                        <label for="OrdenServDet" class="col-form-label col-6 col-sm-3">Orden Servicio: </label>
+                        <input id="OrdenServDet" type="text" class="form-control col-6 col-sm-2" />
+
+                        <label for="TipDocDet" class="col-form-label col-6 col-sm-3">BL/BOOKING: </label>
+                        <input id="TipDocDet" type="text" class="form-control col-6 col-md-2" />
+                    </div>
+                    <div class="form-inline">
+                        <label for="ContenedorDet" class="col-form-label col-6 col-sm-3">Contenedor: </label>
+                        <input id="ContenedorDet" type="text" class="form-control col-6 col-sm-2" />
+
+                        <label for="PlacaDet" class="col-form-label col-6 col-sm-3">Placa: </label>
+                        <input id="PlacaDet" type="text" class="form-control col-6 col-sm-2" />
+                    </div>
+                    <div class="form-inline">
+                        <label for="BreveteDet" class="col-form-label col-6 col-sm-3">Brevete: </label>
+                        <input id="BreveteDet" type="text" class="form-control col-6 col-sm-2" />
+
+                        <label for="RucDet" class="col-form-label col-6 col-sm-3">RUC: </label>
+                        <input id="RucDet" type="text" class="form-control col-6 col-sm-2" />
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success mb-2" type="button" style="" id="btnDescargarPlanTranspDet"><i class="fas fa-download"></i>Descargar</button>                    
+                    </div>
+                    
                 </form>
             </div>
 

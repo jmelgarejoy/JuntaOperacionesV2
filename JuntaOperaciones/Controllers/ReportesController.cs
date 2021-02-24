@@ -50,10 +50,1157 @@ namespace JuntaOperaciones.Controllers
             return Json(data); ;
         }
         [HttpPost, HelperController.ValidateHeaderAntiForgeryToken]
-        public JsonResult ExportToExcelPlanificacionTransportes(string FECHA)
+        public JsonResult ExportToExcelPlanificacionTransportesDetalle(string FECHA,string NORSRN,
+            string DOCREF,string CONTENEDOR,string PLACA,string BREVETE,string RUCTRANSP)
+        {
+            Entidad.GetReporteDetalladoQueryInput input = new Entidad.GetReporteDetalladoQueryInput();
+            List<Entidad.GetReporteDetalladoDesembarque> LstDetalleDesc = new List<Entidad.GetReporteDetalladoDesembarque>();
+            List<Entidad.GetReporteDetalladoEmbarque> LstDetalleEmb = new List<Entidad.GetReporteDetalladoEmbarque>();
+            
+           
+            if (NORSRN != "" || DOCREF != "" || CONTENEDOR != "")
+            {
+                input.XFECHA = "0";
+            }
+            else { input.XFECHA = FECHA; }
+            if (NORSRN != "")
+            {
+                input.XNORSRN = NORSRN;
+            }
+            else
+            {
+                input.XNORSRN = "0";
+            }
+
+            input.XDOCREF = DOCREF;
+            input.XCONTENEDOR = CONTENEDOR;
+            input.XPLACA = PLACA;
+            input.XBREVETE = BREVETE;
+            
+            if (RUCTRANSP != "")
+            {
+                input.XRUCTRANSP = RUCTRANSP;
+            }
+            else
+            {
+                input.XRUCTRANSP = "0";
+            }
+            
+            LstDetalleDesc = negReporte.ConsultaDetalleDescarga(input);
+            LstDetalleEmb = negReporte.ConsultaDetalleEmbarque(input);
+            ExcelPackage.LicenseContext = LicenseContext.Commercial;
+            ExcelPackage workbook = new ExcelPackage();
+            string handle = Guid.NewGuid().ToString();
+            try
+            {
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    workbook.Workbook.Properties.Author = "Ransa";
+                    workbook.Workbook.Properties.Title = "Reporte de Planificación de Transportes";
+                    var worksheet = workbook.Workbook.Worksheets.Add("Embarque");
+                    var worksheet2 = workbook.Workbook.Worksheets.Add("Descarga");
+                    worksheet.Name = "Embarque";
+                    worksheet2.Name = "Descargue";
+                    #region reporteEmbarque
+                    int fontSizeCab1 = 12;
+                    int rowIndex = 1;
+                    #region CABECERA
+                    using (var celda = worksheet.Cells["A" + rowIndex + ":A" + rowIndex])
+                    {
+                        celda.Value = "Operador";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet.Cells["B" + rowIndex + ":B" + rowIndex])
+                    {
+                        celda.Value = "Tipo Operación";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet.Cells["C" + rowIndex + ":C" + rowIndex])
+                    {
+                        celda.Value = "Nave-Viaje";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet.Cells["D" + rowIndex + ":D" + rowIndex])
+                    {
+                        celda.Value = "OS";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet.Cells["E" + rowIndex + ":E" + rowIndex])
+                    {
+                        celda.Value = "Fecha de Ingreso / Salida";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet.Cells["F" + rowIndex + ":F" + rowIndex])
+                    {
+                        celda.Value = "Cliente";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet.Cells["G" + rowIndex + ":G" + rowIndex])
+                    {
+                        celda.Value = "BL/BK";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet.Cells["H" + rowIndex + ":H" + rowIndex])
+                    {
+                        celda.Value = "Contenedor";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet.Cells["I" + rowIndex + ":I" + rowIndex])
+                    {
+                        celda.Value = "Tipo";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
+                    {
+                        celda.Value = "Placa";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet.Cells["K" + rowIndex + ":K" + rowIndex])
+                    {
+                        celda.Value = "Brevete";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet.Cells["L" + rowIndex + ":L" + rowIndex])
+                    {
+                        celda.Value = "Chofer";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet.Cells["M" + rowIndex + ":M" + rowIndex])
+                    {
+                        celda.Value = "RUC Transporte";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet.Cells["N" + rowIndex + ":N" + rowIndex])
+                    {
+                        celda.Value = "Nombre Transporte";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet.Cells["O" + rowIndex + ":O" + rowIndex])
+                    {
+                        celda.Value = "IMO";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet.Cells["P" + rowIndex + ":P" + rowIndex])
+                    {
+                        celda.Value = "IQBF";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    #endregion
+                    #region Detalle
+                   
+                    if (LstDetalleEmb.Count > 0)
+                    {
+                        rowIndex += 1;
+                        for (int x = 0; x < LstDetalleEmb.Count; x++)
+                        {
+                            using (var celda = worksheet.Cells["A" + rowIndex + ":A" + rowIndex])
+                            {
+                                celda.Value = LstDetalleEmb[x].OPERADOR;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet.Cells["B" + rowIndex + ":B" + rowIndex])
+                            {
+                                celda.Value = LstDetalleEmb[x].TIPOOPERACION;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet.Cells["C" + rowIndex + ":C" + rowIndex])
+                            {
+                                celda.Value = LstDetalleEmb[x].NAVEVIAJE;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet.Cells["D" + rowIndex + ":D" + rowIndex])
+                            {
+                                celda.Value = LstDetalleEmb[x].ORDENSERVICIO;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                          
+                            using (var celda = worksheet.Cells["E" + rowIndex + ":E" + rowIndex])
+                            {
+                                celda.Value = LstDetalleEmb[x].FechaHoraMovimiento;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet.Cells["F" + rowIndex + ":F" + rowIndex])
+                            {
+                                celda.Value = LstDetalleEmb[x].EMBARCADOR;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet.Cells["G" + rowIndex + ":G" + rowIndex])
+                            {
+                                celda.Value = LstDetalleEmb[x].BLBOOKING;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet.Cells["H" + rowIndex + ":H" + rowIndex])
+                            {
+                                celda.Value = LstDetalleEmb[x].CONTENEDOR;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet.Cells["I" + rowIndex + ":I" + rowIndex])
+                            {
+                                celda.Value = LstDetalleEmb[x].TIPOCONTENEDOR;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
+                            {
+                                celda.Value = LstDetalleEmb[x].PLACA;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet.Cells["K" + rowIndex + ":K" + rowIndex])
+                            {
+                                celda.Value = LstDetalleEmb[x].BREVETE;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet.Cells["L" + rowIndex + ":L" + rowIndex])
+                            {
+                                celda.Value = LstDetalleEmb[x].NOMBRECHOFER;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet.Cells["M" + rowIndex + ":M" + rowIndex])
+                            {
+                                if (LstDetalleEmb[x].RUCTRANSPORTE == 0)
+                                { celda.Value = ""; }
+                                else { celda.Value = LstDetalleEmb[x].RUCTRANSPORTE; }
+                                
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet.Cells["N" + rowIndex + ":N" + rowIndex])
+                            {
+                                celda.Value = LstDetalleEmb[x].NOMBRETRANSPORTE;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet.Cells["O" + rowIndex + ":O" + rowIndex])
+                            {
+                                celda.Value = LstDetalleEmb[x].IMO;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet.Cells["P" + rowIndex + ":P" + rowIndex])
+                            {
+                                celda.Value = LstDetalleEmb[x].IQBF;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            rowIndex += 1;
+                        }
+                    }
+
+                    #endregion
+                    #endregion
+                    #region reporteDescarga
+                    fontSizeCab1 = 12;
+                    rowIndex = 1;
+                    #region CABECERA
+                    using (var celda = worksheet2.Cells["A" + rowIndex + ":A" + rowIndex])
+                    {
+                        celda.Value = "Operador";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet2.Cells["B" + rowIndex + ":B" + rowIndex])
+                    {
+                        celda.Value = "Tipo Operación";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet2.Cells["C" + rowIndex + ":C" + rowIndex])
+                    {
+                        celda.Value = "Nave-Viaje";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet2.Cells["D" + rowIndex + ":D" + rowIndex])
+                    {
+                        celda.Value = "OS";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet2.Cells["E" + rowIndex + ":E" + rowIndex])
+                    {
+                        celda.Value = "Fecha de Ingreso / Salida";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet2.Cells["F" + rowIndex + ":F" + rowIndex])
+                    {
+                        celda.Value = "Cliente";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet2.Cells["G" + rowIndex + ":G" + rowIndex])
+                    {
+                        celda.Value = "BL/BK";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet2.Cells["H" + rowIndex + ":H" + rowIndex])
+                    {
+                        celda.Value = "Contenedor";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet2.Cells["I" + rowIndex + ":I" + rowIndex])
+                    {
+                        celda.Value = "Tipo";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet2.Cells["J" + rowIndex + ":J" + rowIndex])
+                    {
+                        celda.Value = "Placa";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet2.Cells["K" + rowIndex + ":K" + rowIndex])
+                    {
+                        celda.Value = "Brevete";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet2.Cells["L" + rowIndex + ":L" + rowIndex])
+                    {
+                        celda.Value = "Chofer";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet2.Cells["M" + rowIndex + ":M" + rowIndex])
+                    {
+                        celda.Value = "RUC Transporte";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet2.Cells["N" + rowIndex + ":N" + rowIndex])
+                    {
+                        celda.Value = "Nombre Transporte";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet2.Cells["O" + rowIndex + ":O" + rowIndex])
+                    {
+                        celda.Value = "IMO";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    using (var celda = worksheet2.Cells["P" + rowIndex + ":P" + rowIndex])
+                    {
+                        celda.Value = "IQBF";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
+                        celda.Style.Font.Size = fontSizeCab1;
+                        celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                        celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.AutoFitColumns();
+                    }
+                    #endregion
+                    #region Detalle
+
+                    if (LstDetalleDesc.Count > 0)
+                    {
+                        rowIndex += 1;
+                        for (int x = 0; x < LstDetalleDesc.Count; x++)
+                        {
+                            using (var celda = worksheet2.Cells["A" + rowIndex + ":A" + rowIndex])
+                            {
+                                celda.Value = LstDetalleDesc[x].OPERADOR;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet2.Cells["B" + rowIndex + ":B" + rowIndex])
+                            {
+                                celda.Value = LstDetalleDesc[x].TIPOOPERACION;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet2.Cells["C" + rowIndex + ":C" + rowIndex])
+                            {
+                                celda.Value = LstDetalleDesc[x].NAVEVIAJE;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet2.Cells["D" + rowIndex + ":D" + rowIndex])
+                            {
+                                celda.Value = LstDetalleDesc[x].OSMANIFIESTO;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet2.Cells["E" + rowIndex + ":E" + rowIndex])
+                            {
+                                celda.Value = LstDetalleDesc[x].FechaHoraMovimiento;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet2.Cells["F" + rowIndex + ":F" + rowIndex])
+                            {
+                                celda.Value = LstDetalleDesc[x].CLIENTE;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet2.Cells["G" + rowIndex + ":G" + rowIndex])
+                            {
+                                celda.Value = LstDetalleDesc[x].BLBK;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet2.Cells["H" + rowIndex + ":H" + rowIndex])
+                            {
+                                celda.Value = LstDetalleDesc[x].CONTENEDOR;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet2.Cells["I" + rowIndex + ":I" + rowIndex])
+                            {
+                                celda.Value = LstDetalleDesc[x].TIPOCONTENEDOR;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet2.Cells["J" + rowIndex + ":J" + rowIndex])
+                            {
+                                celda.Value = LstDetalleDesc[x].PLACA;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet2.Cells["K" + rowIndex + ":K" + rowIndex])
+                            {
+                                celda.Value = LstDetalleDesc[x].BREVETE;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet2.Cells["L" + rowIndex + ":L" + rowIndex])
+                            {
+                                celda.Value = LstDetalleDesc[x].NOMBRECHOFER;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet2.Cells["M" + rowIndex + ":M" + rowIndex])
+                            {
+                                if (LstDetalleDesc[x].RUCTRANSPORTE == 0)
+                                {
+                                    celda.Value = "";
+                                }
+                                else { celda.Value = LstDetalleDesc[x].RUCTRANSPORTE; }
+                                
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet2.Cells["N" + rowIndex + ":N" + rowIndex])
+                            {
+                                celda.Value = LstDetalleDesc[x].NOMBRETRANSPORTE;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet2.Cells["O" + rowIndex + ":O" + rowIndex])
+                            {
+                                celda.Value = LstDetalleDesc[x].IMO;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            using (var celda = worksheet2.Cells["P" + rowIndex + ":P" + rowIndex])
+                            {
+                                celda.Value = LstDetalleDesc[x].IQBF;
+                                celda.Style.Font.Name = "Calibri";
+                                celda.Style.Font.Bold = true;
+                                celda.Style.Font.Size = fontSizeCab1;
+                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                celda.AutoFitColumns();
+                            }
+                            rowIndex += 1;
+                        }
+                    }
+
+                    #endregion
+                    #endregion
+                    
+                    workbook.SaveAs(memoryStream);
+                    memoryStream.Position = 0;
+                    TempData[handle] = memoryStream.ToArray();
+
+
+                }
+                // Note we are returning a filename as well as the handle
+                return Json(new { FileGuid = handle, FileName = "Reporte Detallado de Planificación de transportes (" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ").xlsx" });
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        [HttpPost, HelperController.ValidateHeaderAntiForgeryToken]
+        public JsonResult ExportToExcelPlanificacionTransportes(string FECHA,string NORSRN)
         {
             Entidad.GetPlanTransporteQueryInput input = new Entidad.GetPlanTransporteQueryInput();
-            input.XFECHA = FECHA;
+            if (NORSRN == "")
+            {
+                input.XFECHA = FECHA;
+                input.XNORSRN = "0";
+            }
+            else
+            {
+                input.XFECHA = "0";
+                input.XNORSRN = NORSRN;
+            }
+           
             List<Entidad.GetPlanTransporteDescarga> LstDescAPM = new List<Entidad.GetPlanTransporteDescarga>();
             List<Entidad.GetPlanTransporteDescarga> LstDescDPW = new List<Entidad.GetPlanTransporteDescarga>();
             List<Entidad.GetPlanTransporteEmbarque> LstEmbAPM = new List<Entidad.GetPlanTransporteEmbarque>();
@@ -78,7 +1225,7 @@ namespace JuntaOperaciones.Controllers
                     var worksheet = workbook.Workbook.Worksheets.Add("Data");
                     worksheet.Name = "Datos";
                     int fontSizeCab1 = 12;
-                    int fontSizeCab2 = 10;
+                    //int fontSizeCab2 = 10;
 
                    
                     #region Report Diseño
@@ -108,8 +1255,8 @@ namespace JuntaOperaciones.Controllers
                     {
                         celda.Merge = true;
                         celda.Value ="CAMIONES";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -131,8 +1278,8 @@ namespace JuntaOperaciones.Controllers
                         DateTime dia= DateTime.Today;
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr.ToUpper() + " " + dia.ToString().Substring(0,2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -154,8 +1301,8 @@ namespace JuntaOperaciones.Controllers
                         fechaActual = fechaActual.AddDays(1);
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr.ToUpper() + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -179,8 +1326,8 @@ namespace JuntaOperaciones.Controllers
                         fechaActual = fechaActual.AddDays(2);
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr.ToUpper() + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -204,8 +1351,8 @@ namespace JuntaOperaciones.Controllers
                         fechaActual = fechaActual.AddDays(3);
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr.ToUpper() + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -221,8 +1368,8 @@ namespace JuntaOperaciones.Controllers
                     {
                         //celda.Merge = true;
                         celda.Value = "07/1";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -239,8 +1386,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/2";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -257,8 +1404,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/0";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -275,8 +1422,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "07/1";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -293,8 +1440,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/2";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -311,8 +1458,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/0";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -329,8 +1476,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "07/15";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -347,8 +1494,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/23";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -365,8 +1512,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/07";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -383,8 +1530,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "07/15";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -401,8 +1548,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/23";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -419,8 +1566,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/07";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -448,9 +1595,9 @@ namespace JuntaOperaciones.Controllers
                     {
                         //celda.Merge = true;
 
-                        celda.Value = "cantidad de CAJAS";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Value = "Cantidad de CAJAS";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
@@ -459,16 +1606,16 @@ namespace JuntaOperaciones.Controllers
                         celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#DCE6F1"));
                         celda.AutoFitColumns();
                     }
                     using (var celda = worksheet.Cells["J" + 5 + ":J" + 5])
                     {
                         //celda.Merge = true;
 
-                        celda.Value = "camiones Necesarios";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Value = "Camiones Necesarios";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
@@ -477,16 +1624,16 @@ namespace JuntaOperaciones.Controllers
                         celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#DCE6F1"));
                         celda.AutoFitColumns();
                     }
                     using (var celda = worksheet.Cells["J" + 6 + ":J" + 6])
                     {
                         //celda.Merge = true;
 
-                        celda.Value = "camiones Actuales";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Value = "Camiones Actuales";
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
@@ -495,7 +1642,7 @@ namespace JuntaOperaciones.Controllers
                         celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#DCE6F1"));
                         celda.AutoFitColumns();
                     }
                     using (var celda = worksheet.Cells["J" + 7 + ":J" + 7])
@@ -503,8 +1650,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "KPI - utilización";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
@@ -513,7 +1660,7 @@ namespace JuntaOperaciones.Controllers
                         celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#DCE6F1"));
                         celda.AutoFitColumns();
                     }
                     using (var celda = worksheet.Cells["J" + 8 + ":J" + 8])
@@ -521,8 +1668,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "Cancelados";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#FE000F"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
@@ -531,7 +1678,7 @@ namespace JuntaOperaciones.Controllers
                         celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#DCE6F1"));
                         celda.AutoFitColumns();
                     }
                     using (var celda = worksheet.Cells["J" + 9 + ":J" + 9])
@@ -539,8 +1686,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "APOYO EN INLAND";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
@@ -549,7 +1696,7 @@ namespace JuntaOperaciones.Controllers
                         celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#DCE6F1"));
                         celda.AutoFitColumns();
                     }
                     using (var celda = worksheet.Cells["J" + 10 + ":J" + 10])
@@ -557,8 +1704,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "INOPERATIVOS";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
@@ -567,7 +1714,7 @@ namespace JuntaOperaciones.Controllers
                         celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#DCE6F1"));
                         celda.AutoFitColumns();
                     }
                     using (var celda = worksheet.Cells["J" + 11 + ":J" + 11])
@@ -575,8 +1722,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "CAMIONES ALQUILADOS";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
@@ -585,7 +1732,7 @@ namespace JuntaOperaciones.Controllers
                         celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#DCE6F1"));
                         celda.AutoFitColumns();
                     }
                     using (var celda = worksheet.Cells["J" + 12 + ":J" + 12])
@@ -593,8 +1740,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "CAMIONES RANSA Y ALQUILADOS NEW";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
@@ -603,7 +1750,7 @@ namespace JuntaOperaciones.Controllers
                         celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                         celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                        celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#DCE6F1"));
                         celda.AutoFitColumns();
                     }
                     #endregion
@@ -614,8 +1761,8 @@ namespace JuntaOperaciones.Controllers
                         celda.Merge = true;
                         DateTime fechaActual = DateTime.Now;
                         celda.Value = "CALLAO, " + fechaActual.ToLongDateString().ToUpper();
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -632,8 +1779,8 @@ namespace JuntaOperaciones.Controllers
                         celda.Merge = true;
 
                         celda.Value = "";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -650,8 +1797,8 @@ namespace JuntaOperaciones.Controllers
                         celda.Merge = true;
 
                         celda.Value = "";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -668,8 +1815,8 @@ namespace JuntaOperaciones.Controllers
                         celda.Merge = true;
 
                         celda.Value = "";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -686,8 +1833,8 @@ namespace JuntaOperaciones.Controllers
                         celda.Merge = true;
 
                         celda.Value = "";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -703,8 +1850,8 @@ namespace JuntaOperaciones.Controllers
                     {
 
                         celda.Value = "";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -716,12 +1863,11 @@ namespace JuntaOperaciones.Controllers
                         celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
                         celda.AutoFitColumns();
                     }
-
                     using (var celda = worksheet.Cells["C" + 14 + ":C" + 14])
                     {
                         celda.Value = "DESCARGA APMT";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -736,8 +1882,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["H" + 14 + ":H" + 14])
                     {
                         celda.Value = "+48T/D";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -752,8 +1898,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["J" + 14 + ":J" + 14])
                     {
                         celda.Value = "SITUACION";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -773,8 +1919,8 @@ namespace JuntaOperaciones.Controllers
 
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr.ToUpper() + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -795,8 +1941,8 @@ namespace JuntaOperaciones.Controllers
                         fechaActual = fechaActual.AddDays(1);
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr.ToUpper() + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -817,8 +1963,8 @@ namespace JuntaOperaciones.Controllers
                         fechaActual = fechaActual.AddDays(2);
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr.ToUpper() + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -839,8 +1985,8 @@ namespace JuntaOperaciones.Controllers
                         fechaActual = fechaActual.AddDays(3);
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr.ToUpper() + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -852,13 +1998,11 @@ namespace JuntaOperaciones.Controllers
                         celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
                         celda.AutoFitColumns();
                     }
-
-
                     using (var celda = worksheet.Cells["B" + 15 + ":B" + 15])
                     {
                         celda.Value = "ETB";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -873,8 +2017,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["C" + 15 + ":C" + 15])
                     {
                         celda.Value = "NAVES";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -889,8 +2033,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["D" + 15 + ":D" + 15])
                     {
                         celda.Value = "Total";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -905,8 +2049,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["E" + 15 + ":E" + 15])
                     {
                         celda.Value = "Avance";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -921,8 +2065,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["F" + 15 + ":F" + 15])
                     {
                         celda.Value = "Saldo";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -937,8 +2081,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["G" + 15 + ":G" + 15])
                     {
                         celda.Value = "T/D";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -953,8 +2097,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["H" + 15 + ":H" + 15])
                     {
                         celda.Value = "VENCE";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -969,8 +2113,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["I" + 15 + ":I" + 15])
                     {
                         celda.Value = "OS/Mfto";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -985,8 +2129,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["J" + 15 + ":J" + 15])
                     {
                         celda.Value = "";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1001,8 +2145,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["K" + 15 + ":K" + 15])
                     {
                         celda.Value = "07/15";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1017,8 +2161,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["L" + 15 + ":L" + 15])
                     {
                         celda.Value = "15/23";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1033,8 +2177,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["M" + 15 + ":M" + 15])
                     {
                         celda.Value = "23/07";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1049,8 +2193,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["N" + 15 + ":N" + 15])
                     {
                         celda.Value = "07/15";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1065,8 +2209,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["O" + 15 + ":O" + 15])
                     {
                         celda.Value = "15/23";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1081,8 +2225,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["P" + 15 + ":P" + 15])
                     {
                         celda.Value = "23/07";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1097,8 +2241,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["Q" + 15 + ":Q" + 15])
                     {
                         celda.Value = "07/15";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1113,8 +2257,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["R" + 15 + ":R" + 15])
                     {
                         celda.Value = "15/23";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1129,8 +2273,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["S" + 15 + ":S" + 15])
                     {
                         celda.Value = "23/07";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1147,8 +2291,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "07/15";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1165,8 +2309,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/23";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1183,8 +2327,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/07";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1197,11 +2341,12 @@ namespace JuntaOperaciones.Controllers
                         celda.AutoFitColumns();
                     }
                     #endregion
-                    #region Dest Descarga APMT
+                    #region Detalle Descarga APMT
                     int rowIndex = 16;
                     int SumaTot = 0;
                     int SumaAvance = 0;
                     int SumaSaldo = 0;
+                    
                     if (LstDescAPM.Count > 0)
                     {
                         SumaTot = 0;
@@ -1209,158 +2354,187 @@ namespace JuntaOperaciones.Controllers
                         SumaSaldo = 0;
                         for (int x = 0; x < LstDescAPM.Count; x++)
                         {
-                            using (var celda = worksheet.Cells["B" + rowIndex + ":B" + rowIndex])
+                            if (LstDescAPM[x].Total > 0)
                             {
-                                celda.Value = LstDescAPM[x].ETB;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["C" + rowIndex + ":C" + rowIndex])
-                            {
-                                celda.Value = LstDescAPM[x].NaveViaje;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["D" + rowIndex + ":D" + rowIndex])
-                            {
-                                SumaTot = SumaTot + LstDescAPM[x].Total;
-                                celda.Value = LstDescAPM[x].Total.ToString();
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["E" + rowIndex + ":E" + rowIndex])
-                            {
-                                SumaAvance = SumaAvance + LstDescAPM[x].Avance;
-                                celda.Value = LstDescAPM[x].Avance.ToString();
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["F" + rowIndex + ":F" + rowIndex])
-                            {
-                                SumaSaldo = SumaSaldo + LstDescAPM[x].Saldo;
-                                celda.Value = LstDescAPM[x].Saldo.ToString();
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#FE000F"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["G" + rowIndex + ":G" + rowIndex])
-                            {
+                                using (var celda = worksheet.Cells["B" + rowIndex + ":B" + rowIndex])
+                                {
+                                    if (!LstDescAPM[x].ETB.ToString().Equals("0"))
+                                    {
+                                        celda.Value = LstDescAPM[x].ETB;
+                                    }
+                                    else
+                                    {
+                                        celda.Value = "";
+                                    }
 
-                                celda.Value = LstDescAPM[x].TerminoDescarga.ToString();
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#FE000F"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["H" + rowIndex + ":H" + rowIndex])
-                            {
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["C" + rowIndex + ":C" + rowIndex])
+                                {
+                                    celda.Value = LstDescAPM[x].NaveViaje;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["D" + rowIndex + ":D" + rowIndex])
+                                {
+                                    SumaTot = SumaTot + LstDescAPM[x].Total;
+                                    celda.Value = LstDescAPM[x].Total.ToString();
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.Style.Numberformat.Format = "#";
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["E" + rowIndex + ":E" + rowIndex])
+                                {
+                                    SumaAvance = SumaAvance + LstDescAPM[x].Avance;
+                                    celda.Value = LstDescAPM[x].Avance.ToString();
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.Style.Numberformat.Format = "#";
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["F" + rowIndex + ":F" + rowIndex])
+                                {
+                                    SumaSaldo = SumaSaldo + LstDescAPM[x].Saldo;
+                                    celda.Value = LstDescAPM[x].Saldo.ToString();
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.Style.Numberformat.Format = "#";
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["G" + rowIndex + ":G" + rowIndex])
+                                {
+                                    if (!LstDescAPM[x].TerminoDescarga.ToString().Equals("0"))
+                                    {
+                                        celda.Value = LstDescAPM[x].TerminoDescarga.ToString();
+                                    }
+                                    else
+                                    {
+                                        celda.Value = "";
+                                    }
 
-                                celda.Value = LstDescAPM[x].Vence.ToString();
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["I" + rowIndex + ":I" + rowIndex])
-                            {
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#FE000F"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["H" + rowIndex + ":H" + rowIndex])
+                                {
+                                    if (!LstDescAPM[x].Vence.ToString().Equals("0"))
+                                    {
+                                        celda.Value = LstDescAPM[x].Vence.ToString();
+                                    }
+                                    else
+                                    {
+                                        celda.Value = "";
+                                    }
 
-                                celda.Value = LstDescAPM[x].OSManifiesto.ToString();
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
-                            {
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["I" + rowIndex + ":I" + rowIndex])
+                                {
 
-                                celda.Value = LstDescAPM[x].Observacion.ToString();
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
+                                    celda.Value = LstDescAPM[x].OSMANIFIESTO.ToString();
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
+                                {
+
+                                    celda.Value = LstDescAPM[x].Observacion.ToString();
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                rowIndex += 1;
                             }
-                            rowIndex += 1;
+                         
                         }
                         using (var celda = worksheet.Cells["B" + 16 + ":S" + (rowIndex - 1).ToString()])
                         {
@@ -1372,8 +2546,8 @@ namespace JuntaOperaciones.Controllers
                         using (var celda = worksheet.Cells["D" + rowIndex + ":D" + rowIndex])
                         {
                             celda.Value = SumaTot;
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1388,8 +2562,8 @@ namespace JuntaOperaciones.Controllers
                         using (var celda = worksheet.Cells["E" + rowIndex + ":E" + rowIndex])
                         {
                             celda.Value = SumaAvance;
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1404,8 +2578,8 @@ namespace JuntaOperaciones.Controllers
                         using (var celda = worksheet.Cells["F" + rowIndex + ":F" + rowIndex])
                         {
                             celda.Value = SumaSaldo;
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1420,8 +2594,8 @@ namespace JuntaOperaciones.Controllers
                         using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
                         {
                             celda.Value = "Total Impo APMT";
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#FE000F"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1436,8 +2610,8 @@ namespace JuntaOperaciones.Controllers
                         using (var celda = worksheet.Cells["K" + rowIndex + ":S" + rowIndex])
                         {
                             celda.Value = "";
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1449,11 +2623,8 @@ namespace JuntaOperaciones.Controllers
                             celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
                             celda.AutoFitColumns();
                         }
-
                     }
                     #endregion
-
-
                     #endregion
                     #region EMBARQUE APMT
                     #region Cabecera EMBARQUE APMT
@@ -1461,8 +2632,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["B" + rowIndex + ":V" + rowIndex])
                     {
                         
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1477,8 +2648,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["C" + rowIndex + ":C" + rowIndex])
                     {
                         celda.Value = "EMBARQUE APMT";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1493,8 +2664,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
                     {
                         celda.Value = "SITUACION";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1514,8 +2685,8 @@ namespace JuntaOperaciones.Controllers
                         DateTime dia = DateTime.Today;
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr.ToUpper() + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1537,8 +2708,8 @@ namespace JuntaOperaciones.Controllers
                         fechaActual = fechaActual.AddDays(1);
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr.ToUpper() + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1562,8 +2733,8 @@ namespace JuntaOperaciones.Controllers
                         fechaActual = fechaActual.AddDays(2);
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr.ToUpper() + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1587,8 +2758,8 @@ namespace JuntaOperaciones.Controllers
                         fechaActual = fechaActual.AddDays(3);
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr.ToUpper() + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1604,8 +2775,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["B" + rowIndex + ":B" + rowIndex])
                     {
                         celda.Value = "ETB";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1620,8 +2791,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["C" + rowIndex + ":C" + rowIndex])
                     {
                         celda.Value = "Naves";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1636,8 +2807,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["D" + rowIndex + ":D" + rowIndex])
                     {
                         celda.Value = "Ingresados";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1652,8 +2823,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["E" + rowIndex + ":E" + rowIndex])
                     {
                         celda.Value = "Avance";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1668,8 +2839,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["F" + rowIndex + ":F" + rowIndex])
                     {
                         celda.Value = "Saldo";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1684,8 +2855,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["G" + rowIndex + ":G" + rowIndex])
                     {
                         celda.Value = "I. Stacking";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1700,8 +2871,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["H" + rowIndex + ":H" + rowIndex])
                     {
                         celda.Value = "CutOff Dry / Reefer";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1716,8 +2887,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["I" + rowIndex + ":I" + rowIndex])
                     {
                         celda.Value = "OS";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1732,8 +2903,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
                     {
                         celda.Value = "";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1749,8 +2920,8 @@ namespace JuntaOperaciones.Controllers
                     {
                         //celda.Merge = true;
                         celda.Value = "07/1";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1767,8 +2938,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/2";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1785,8 +2956,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/0";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1803,8 +2974,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "07/1";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1821,8 +2992,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/2";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1839,8 +3010,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/0";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1857,8 +3028,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "07/15";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1875,8 +3046,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/23";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1893,8 +3064,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/07";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1911,8 +3082,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "07/15";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1929,8 +3100,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/23";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1947,8 +3118,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/07";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -1970,196 +3141,220 @@ namespace JuntaOperaciones.Controllers
                         SumaSaldo = 0;
                         for (int x = 0; x < LstEmbAPM.Count; x++)
                         {
+                            if (LstEmbAPM[x].Ingresados > 0)
+                            {
+                                using (var celda = worksheet.Cells["B" + rowIndex + ":B" + rowIndex])
+                                {
+                                    if (!LstEmbAPM[x].ETB.ToString().Equals("0"))
+                                    {
+                                        celda.Value = LstEmbAPM[x].ETB.ToString();
+                                    }
+                                    else
+                                    {
+                                        celda.Value = "";
+                                    }
 
-                            using (var celda = worksheet.Cells["B" + rowIndex + ":B" + rowIndex])
-                            {
-                                //celda.Merge = true;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["C" + rowIndex + ":C" + rowIndex])
+                                {
+                                    //celda.Merge = true;
 
-                                celda.Value = LstEmbAPM[x].ETB;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["C" + rowIndex + ":C" + rowIndex])
-                            {
-                                //celda.Merge = true;
+                                    celda.Value = LstEmbAPM[x].NaveViaje;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["D" + rowIndex + ":D" + rowIndex])
+                                {
+                                    //celda.Merge = true;
+                                    SumaTot = SumaTot + LstEmbAPM[x].Ingresados;
+                                    celda.Value = LstEmbAPM[x].Ingresados;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    //celda.Style.Numberformat.Format = "#";
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["E" + rowIndex + ":E" + rowIndex])
+                                {
+                                    //celda.Merge = true;
+                                    SumaAvance = SumaAvance + LstEmbAPM[x].Avance;
+                                    celda.Value = LstEmbAPM[x].Avance;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    //celda.Style.Numberformat.Format = "#";
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["F" + rowIndex + ":F" + rowIndex])
+                                {
+                                    //celda.Merge = true;
+                                    SumaSaldo = SumaSaldo + LstEmbAPM[x].Saldo;
+                                    celda.Value = LstEmbAPM[x].Saldo;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    //celda.Style.Numberformat.Format = "#";
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["G" + rowIndex + ":G" + rowIndex])
+                                {
+                                    if (!LstEmbAPM[x].InicioStackin.ToString().Equals("0"))
+                                    {
+                                        celda.Value = LstEmbAPM[x].InicioStackin.ToString();
+                                    }
+                                    else
+                                    {
+                                        celda.Value = "";
+                                    }
 
-                                celda.Value = LstEmbAPM[x].NaveViaje;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["D" + rowIndex + ":D" + rowIndex])
-                            {
-                                //celda.Merge = true;
-                                SumaTot = SumaTot + LstEmbAPM[x].Ingresados;
-                                celda.Value = LstEmbAPM[x].Ingresados.ToString();
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["E" + rowIndex + ":E" + rowIndex])
-                            {
-                                //celda.Merge = true;
-                                SumaAvance = SumaAvance + LstEmbAPM[x].Avance;
-                                celda.Value = LstEmbAPM[x].Avance.ToString();
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["F" + rowIndex + ":F" + rowIndex])
-                            {
-                                //celda.Merge = true;
-                                SumaSaldo = SumaSaldo + LstEmbAPM[x].Saldo;
-                                celda.Value = LstEmbAPM[x].Saldo.ToString();
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["G" + rowIndex + ":G" + rowIndex])
-                            {
-                                //celda.Merge = true;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["H" + rowIndex + ":H" + rowIndex])
+                                {
+                                    if (!LstEmbAPM[x].CutOff.ToString().Equals("0"))
+                                    {
+                                        celda.Value = LstEmbAPM[x].CutOff.ToString();
+                                    }
+                                    else
+                                    {
+                                        celda.Value = "";
+                                    }
 
-                                celda.Value = LstEmbAPM[x].InicioStackin;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["H" + rowIndex + ":H" + rowIndex])
-                            {
-                                //celda.Merge = true;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["I" + rowIndex + ":I" + rowIndex])
+                                {
+                                    //celda.Merge = true;
 
-                                celda.Value = LstEmbAPM[x].CutOff;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["I" + rowIndex + ":I" + rowIndex])
-                            {
-                                //celda.Merge = true;
+                                    celda.Value = LstEmbAPM[x].ORDENSERVICIO.ToString();
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
+                                {
+                                    //celda.Merge = true;
 
-                                celda.Value = LstEmbAPM[x].OrdenServicio;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
-                            {
-                                //celda.Merge = true;
-
-                                celda.Value = LstEmbAPM[x].Observacion;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["K" + rowIndex + ":V" + rowIndex])
-                            {
-                                //celda.Merge = true;
+                                    celda.Value = LstEmbAPM[x].Observacion;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["K" + rowIndex + ":V" + rowIndex])
+                                {
+                                    //celda.Merge = true;
 
 
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                rowIndex += 1;
                             }
-                            rowIndex += 1;
+                          
                         }
+
                         using (var celda = worksheet.Cells["D" + rowIndex + ":D" + rowIndex])
                         {
                             //celda.Merge = true;
-
                             celda.Value = SumaTot;
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2168,16 +3363,15 @@ namespace JuntaOperaciones.Controllers
                             celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                             celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                             celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                            celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#000000"));
+                            celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
                             celda.AutoFitColumns();
                         }
                         using (var celda = worksheet.Cells["E" + rowIndex + ":E" + rowIndex])
                         {
                             //celda.Merge = true;
-
                             celda.Value = SumaAvance;
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2192,10 +3386,9 @@ namespace JuntaOperaciones.Controllers
                         using (var celda = worksheet.Cells["F" + rowIndex + ":F" + rowIndex])
                         {
                             //celda.Merge = true;
-
                             celda.Value = SumaSaldo;
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2210,10 +3403,9 @@ namespace JuntaOperaciones.Controllers
                         using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
                         {
                             //celda.Merge = true;
-
                             celda.Value = "Total Expo APMT";
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2228,10 +3420,8 @@ namespace JuntaOperaciones.Controllers
                         using (var celda = worksheet.Cells["K" + rowIndex + ":V" + rowIndex])
                         {
                             //celda.Merge = true;
-
-
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2245,15 +3435,15 @@ namespace JuntaOperaciones.Controllers
                         }
                     }
                     #endregion
+                    #endregion
                     #region Resumen APMT
                     rowIndex += 2;
                     using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
                     {
                         //celda.Merge = true;
-
                         celda.Value = "TOTAL CAJAS APMT";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2268,10 +3458,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["K" + rowIndex + ":V" + rowIndex])
                     {
                         //celda.Merge = true;
-
-
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2287,10 +3475,9 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
                     {
                         //celda.Merge = true;
-
                         celda.Value = "Camiones en APMT";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2305,10 +3492,8 @@ namespace JuntaOperaciones.Controllers
                     using (var celda = worksheet.Cells["K" + rowIndex + ":V" + rowIndex])
                     {
                         //celda.Merge = true;
-
-
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2321,8 +3506,6 @@ namespace JuntaOperaciones.Controllers
                         celda.AutoFitColumns();
                     }
                     #endregion
-
-                    #endregion
                     #region DESCARGA DPW
                     #region CABECERA DESCARGA DPW
                     rowIndex += 2;
@@ -2331,8 +3514,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
 
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2349,8 +3532,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "DESCARGA DPW";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2367,8 +3550,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "SITUACION";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2388,8 +3571,8 @@ namespace JuntaOperaciones.Controllers
                         DateTime dia = DateTime.Today;
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2411,8 +3594,8 @@ namespace JuntaOperaciones.Controllers
                         fechaActual = fechaActual.AddDays(1);
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2436,8 +3619,8 @@ namespace JuntaOperaciones.Controllers
                         fechaActual = fechaActual.AddDays(2);
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2461,8 +3644,8 @@ namespace JuntaOperaciones.Controllers
                         fechaActual = fechaActual.AddDays(3);
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2480,8 +3663,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "ETB";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2498,8 +3681,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "Naves";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2516,8 +3699,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "Total";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2534,8 +3717,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "Avance";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2552,8 +3735,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "Saldo";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2570,8 +3753,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "T/D";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2588,8 +3771,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "VENCE";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2606,8 +3789,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "OS";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2624,8 +3807,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2641,8 +3824,8 @@ namespace JuntaOperaciones.Controllers
                     {
                         //celda.Merge = true;
                         celda.Value = "07/1";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2659,8 +3842,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/2";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2677,8 +3860,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/0";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2695,8 +3878,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "07/1";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2713,8 +3896,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/2";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2731,8 +3914,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/0";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2749,8 +3932,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "07/15";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2767,8 +3950,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/23";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2785,8 +3968,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/07";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2803,8 +3986,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "07/15";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2821,8 +4004,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/23";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2839,8 +4022,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/07";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -2862,195 +4045,218 @@ namespace JuntaOperaciones.Controllers
                         SumaSaldo = 0;
                         for (int x = 0; x < LstDescDPW.Count; x++)
                         {
-                            using (var celda = worksheet.Cells["B" + rowIndex + ":B" + rowIndex])
+                            if (LstDescDPW[x].Total > 0)
                             {
-                                //celda.Merge = true;
+                                using (var celda = worksheet.Cells["B" + rowIndex + ":B" + rowIndex])
+                                {
+                                    if (!LstDescDPW[x].ETB.ToString().Equals("0"))
+                                    {
+                                        celda.Value = LstDescDPW[x].ETB.ToString();
+                                    }
+                                    else
+                                    {
+                                        celda.Value = "";
+                                    }
 
-                                celda.Value = LstDescDPW[x].ETB;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["C" + rowIndex + ":C" + rowIndex])
-                            {
-                                //celda.Merge = true;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["C" + rowIndex + ":C" + rowIndex])
+                                {
+                                    //celda.Merge = true;
 
-                                celda.Value = LstDescDPW[x].NaveViaje;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["D" + rowIndex + ":D" + rowIndex])
-                            {
-                                //celda.Merge = true;
-                                SumaTot = SumaTot + LstDescDPW[x].Total;
-                                celda.Value = LstDescDPW[x].Total.ToString();
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["E" + rowIndex + ":E" + rowIndex])
-                            {
-                                //celda.Merge = true;
-                                SumaAvance = SumaAvance + LstDescDPW[x].Avance;
-                                celda.Value = LstDescDPW[x].Avance.ToString();
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["F" + rowIndex + ":F" + rowIndex])
-                            {
-                                //celda.Merge = true;
-                                SumaSaldo = SumaSaldo + LstDescDPW[x].Saldo;
-                                celda.Value = LstDescDPW[x].Saldo.ToString();
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["G" + rowIndex + ":G" + rowIndex])
-                            {
-                                //celda.Merge = true;
+                                    celda.Value = LstDescDPW[x].NaveViaje;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["D" + rowIndex + ":D" + rowIndex])
+                                {
+                                    //celda.Merge = true;
+                                    SumaTot = SumaTot + LstDescDPW[x].Total;
+                                    celda.Value = LstDescDPW[x].Total;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["E" + rowIndex + ":E" + rowIndex])
+                                {
+                                    //celda.Merge = true;
+                                    SumaAvance = SumaAvance + LstDescDPW[x].Avance;
+                                    celda.Value = LstDescDPW[x].Avance;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["F" + rowIndex + ":F" + rowIndex])
+                                {
+                                    //celda.Merge = true;
+                                    SumaSaldo = SumaSaldo + LstDescDPW[x].Saldo;
+                                    celda.Value = LstDescDPW[x].Saldo;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["G" + rowIndex + ":G" + rowIndex])
+                                {
+                                    if (!LstDescDPW[x].TerminoDescarga.ToString().Equals("0"))
+                                    {
+                                        celda.Value = LstDescDPW[x].TerminoDescarga.ToString();
+                                    }
+                                    else
+                                    {
+                                        celda.Value = "";
+                                    }
 
-                                celda.Value = LstDescDPW[x].TerminoDescarga;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["H" + rowIndex + ":H" + rowIndex])
-                            {
-                                //celda.Merge = true;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["H" + rowIndex + ":H" + rowIndex])
+                                {
+                                    if (!LstDescDPW[x].Vence.ToString().Equals("0"))
+                                    {
+                                        celda.Value = LstDescDPW[x].Vence.ToString();
+                                    }
+                                    else
+                                    {
+                                        celda.Value = "";
+                                    }
 
-                                celda.Value = LstDescDPW[x].Vence;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["I" + rowIndex + ":I" + rowIndex])
-                            {
-                                //celda.Merge = true;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["I" + rowIndex + ":I" + rowIndex])
+                                {
+                                    //celda.Merge = true;
 
-                                celda.Value = LstDescDPW[x].OSManifiesto;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
-                            {
-                                //celda.Merge = true;
+                                    celda.Value = LstDescDPW[x].OSMANIFIESTO.ToString();
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
+                                {
+                                    //celda.Merge = true;
 
-                                celda.Value = LstDescDPW[x].Observacion;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["K" + rowIndex + ":V" + rowIndex])
-                            {
-                                //celda.Merge = true;
+                                    celda.Value = LstDescDPW[x].Observacion;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["K" + rowIndex + ":V" + rowIndex])
+                                {
+                                    //celda.Merge = true;
 
 
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
-                                celda.AutoFitColumns();
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                rowIndex += 1;
                             }
+                         
                         }
-                        rowIndex += 1;
+                        
                         using (var celda = worksheet.Cells["D" + rowIndex + ":D" + rowIndex])
                         {
                             //celda.Merge = true;
 
                             celda.Value = SumaTot;
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3059,7 +4265,7 @@ namespace JuntaOperaciones.Controllers
                             celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                             celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                             celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                            celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                            celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
                             celda.AutoFitColumns();
                         }
                         using (var celda = worksheet.Cells["E" + rowIndex + ":E" + rowIndex])
@@ -3067,8 +4273,8 @@ namespace JuntaOperaciones.Controllers
                             //celda.Merge = true;
 
                             celda.Value = SumaAvance;
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3077,7 +4283,7 @@ namespace JuntaOperaciones.Controllers
                             celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                             celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                             celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                            celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                            celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
                             celda.AutoFitColumns();
                         }
                         using (var celda = worksheet.Cells["F" + rowIndex + ":F" + rowIndex])
@@ -3085,8 +4291,8 @@ namespace JuntaOperaciones.Controllers
                             //celda.Merge = true;
 
                             celda.Value = SumaSaldo;
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3095,7 +4301,7 @@ namespace JuntaOperaciones.Controllers
                             celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                             celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                             celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                            celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                            celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
                             celda.AutoFitColumns();
                         }
                         using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
@@ -3103,8 +4309,8 @@ namespace JuntaOperaciones.Controllers
                             //celda.Merge = true;
 
                             celda.Value = "Total Impo DPW";
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3113,7 +4319,7 @@ namespace JuntaOperaciones.Controllers
                             celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                             celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                             celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                            celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                            celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
                             celda.AutoFitColumns();
                         }
                         using (var celda = worksheet.Cells["K" + rowIndex + ":V" + rowIndex])
@@ -3121,8 +4327,8 @@ namespace JuntaOperaciones.Controllers
                             //celda.Merge = true;
 
 
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3131,12 +4337,11 @@ namespace JuntaOperaciones.Controllers
                             celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
                             celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                             celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                            celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#EBF1DE"));
+                            celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
                             celda.AutoFitColumns();
                         }
                     }
                     #endregion
-
                     #endregion
                     #region EMBARQUE DPW
                     #region CABECERA EMBARQUE DPW
@@ -3146,8 +4351,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3164,8 +4369,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "EMBARQUE DPW";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3182,8 +4387,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "SITUACION";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3203,8 +4408,8 @@ namespace JuntaOperaciones.Controllers
                         DateTime dia = DateTime.Today;
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3227,8 +4432,8 @@ namespace JuntaOperaciones.Controllers
                         fechaActual = fechaActual.AddDays(1);
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3252,8 +4457,8 @@ namespace JuntaOperaciones.Controllers
                         fechaActual = fechaActual.AddDays(2);
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3277,8 +4482,8 @@ namespace JuntaOperaciones.Controllers
                         fechaActual = fechaActual.AddDays(3);
                         string diaStr = fechaActual.ToString("dddd");
                         celda.Value = diaStr + " " + dia.ToString().Substring(0, 2);
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3296,8 +4501,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "ETB";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3314,8 +4519,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "Naves";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3332,8 +4537,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "Ingresados";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3350,8 +4555,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "Avance";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3368,8 +4573,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "Saldo";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3386,8 +4591,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "I. Stacking";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3404,8 +4609,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "CutOff Dry / Reefer";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3422,8 +4627,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "OS";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3440,8 +4645,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3457,8 +4662,8 @@ namespace JuntaOperaciones.Controllers
                     {
                         //celda.Merge = true;
                         celda.Value = "07/1";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3475,8 +4680,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/2";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3493,8 +4698,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/0";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3511,8 +4716,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "07/1";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3529,8 +4734,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/2";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3547,8 +4752,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/0";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3565,8 +4770,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "07/15";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3583,8 +4788,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/23";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3601,8 +4806,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/07";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3619,8 +4824,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "07/15";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3637,8 +4842,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "15/23";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3655,8 +4860,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "23/07";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3671,7 +4876,6 @@ namespace JuntaOperaciones.Controllers
 
                     #endregion
                     #region DETALLE EMBARQUE DPW
-                    #endregion
                     if (LstEmbDPW.Count > 0)
                     {
                         rowIndex += 1;
@@ -3680,195 +4884,205 @@ namespace JuntaOperaciones.Controllers
                         SumaSaldo = 0;
                         for (int x = 0; x < LstEmbDPW.Count; x++)
                         {
-                            using (var celda = worksheet.Cells["B" + rowIndex + ":B" + rowIndex])
+                            if (LstEmbDPW[x].Ingresados > 0)
                             {
-                                //celda.Merge = true;
+                                using (var celda = worksheet.Cells["B" + rowIndex + ":B" + rowIndex])
+                                {
+                                    if (!LstEmbDPW[x].ETB.ToString().Equals("0"))
+                                    {
+                                        celda.Value = LstEmbDPW[x].ETB.ToString();
+                                    }
+                                    else
+                                    {
+                                        celda.Value = "";
+                                    }
 
-                                celda.Value = LstEmbDPW[x].ETB;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["C" + rowIndex + ":C" + rowIndex])
-                            {
-                                //celda.Merge = true;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["C" + rowIndex + ":C" + rowIndex])
+                                {
+                                    //celda.Merge = true;
 
-                                celda.Value = LstEmbDPW[x].NaveViaje;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["D" + rowIndex + ":D" + rowIndex])
-                            {
-                                //celda.Merge = true;
-                                SumaTot = SumaTot + LstEmbDPW[x].Ingresados;
-                                celda.Value = LstEmbDPW[x].Ingresados.ToString();
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["E" + rowIndex + ":E" + rowIndex])
-                            {
-                                //celda.Merge = true;
-                                SumaAvance = SumaAvance + LstEmbDPW[x].Avance;
-                                celda.Value = LstEmbDPW[x].Avance.ToString();
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["F" + rowIndex + ":F" + rowIndex])
-                            {
-                                //celda.Merge = true;
-                                SumaSaldo = SumaSaldo + LstEmbDPW[x].Saldo;
-                                celda.Value = LstEmbDPW[x].Saldo.ToString();
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["G" + rowIndex + ":G" + rowIndex])
-                            {
-                                //celda.Merge = true;
+                                    celda.Value = LstEmbDPW[x].NaveViaje;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["D" + rowIndex + ":D" + rowIndex])
+                                {
+                                    SumaTot = SumaTot + LstEmbDPW[x].Ingresados;
+                                    celda.Value = LstEmbDPW[x].Ingresados;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["E" + rowIndex + ":E" + rowIndex])
+                                {
+                                    SumaAvance = SumaAvance + LstEmbDPW[x].Avance;
+                                    celda.Value = LstEmbDPW[x].Avance;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["F" + rowIndex + ":F" + rowIndex])
+                                {
+                                    SumaSaldo = SumaSaldo + LstEmbDPW[x].Saldo;
+                                    celda.Value = LstEmbDPW[x].Saldo;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["G" + rowIndex + ":G" + rowIndex])
+                                {
+                                    if (!LstEmbDPW[x].InicioStackin.ToString().Equals("0"))
+                                    {
+                                        celda.Value = LstEmbDPW[x].InicioStackin.ToString();
+                                    }
+                                    else
+                                    {
+                                        celda.Value = "";
+                                    }
 
-                                celda.Value = LstEmbDPW[x].InicioStackin;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["H" + rowIndex + ":H" + rowIndex])
-                            {
-                                //celda.Merge = true;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["H" + rowIndex + ":H" + rowIndex])
+                                {
+                                    if (!LstEmbDPW[x].CutOff.ToString().Equals("0"))
+                                    {
+                                        celda.Value = LstEmbDPW[x].CutOff.ToString();
+                                    }
+                                    else
+                                    {
+                                        celda.Value = "";
+                                    }
 
-                                celda.Value = LstEmbDPW[x].CutOff;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["I" + rowIndex + ":I" + rowIndex])
+                                {
+                                    celda.Value = LstEmbDPW[x].ORDENSERVICIO.ToString();
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
+                                {
+                                    celda.Value = LstEmbDPW[x].Observacion;
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                using (var celda = worksheet.Cells["K" + rowIndex + ":V" + rowIndex])
+                                {
+                                    celda.Style.Font.Name = "Calibri";
+                                    celda.Style.Font.Bold = true;
+                                    celda.Style.Font.Size = fontSizeCab1;
+                                    celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
+                                    celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                                    celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
+                                    celda.AutoFitColumns();
+                                }
+                                rowIndex += 1;
                             }
-                            using (var celda = worksheet.Cells["I" + rowIndex + ":I" + rowIndex])
-                            {
-                                //celda.Merge = true;
-
-                                celda.Value = LstEmbDPW[x].OrdenServicio;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
-                            {
-                                //celda.Merge = true;
-
-                                celda.Value = LstEmbDPW[x].Observacion;
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
-                            using (var celda = worksheet.Cells["K" + rowIndex + ":V" + rowIndex])
-                            {
-                                //celda.Merge = true;
-
-
-                                celda.Style.Font.Name = "Arial";
-                                celda.Style.Font.Bold = false;
-                                celda.Style.Font.Size = fontSizeCab1;
-                                celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
-                                celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                                celda.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                                celda.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                celda.Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FFFFFF"));
-                                celda.AutoFitColumns();
-                            }
+                          
                         }
-                        rowIndex += 1;
                         using (var celda = worksheet.Cells["D" + rowIndex + ":D" + rowIndex])
                         {
-                            //celda.Merge = true;
-
                             celda.Value = SumaTot;
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3882,11 +5096,9 @@ namespace JuntaOperaciones.Controllers
                         }
                         using (var celda = worksheet.Cells["E" + rowIndex + ":E" + rowIndex])
                         {
-                            //celda.Merge = true;
-
                             celda.Value = SumaAvance;
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3900,11 +5112,9 @@ namespace JuntaOperaciones.Controllers
                         }
                         using (var celda = worksheet.Cells["F" + rowIndex + ":F" + rowIndex])
                         {
-                            //celda.Merge = true;
-
                             celda.Value = SumaSaldo;
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3918,11 +5128,9 @@ namespace JuntaOperaciones.Controllers
                         }
                         using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
                         {
-                            //celda.Merge = true;
-
                             celda.Value = "Total Expo DPW";
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3936,11 +5144,8 @@ namespace JuntaOperaciones.Controllers
                         }
                         using (var celda = worksheet.Cells["K" + rowIndex + ":V" + rowIndex])
                         {
-                            //celda.Merge = true;
-
-
-                            celda.Style.Font.Name = "Arial";
-                            celda.Style.Font.Bold = false;
+                            celda.Style.Font.Name = "Calibri";
+                            celda.Style.Font.Bold = true;
                             celda.Style.Font.Size = fontSizeCab1;
                             celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                             celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3954,14 +5159,15 @@ namespace JuntaOperaciones.Controllers
                         }
                     }
                     #endregion
+                    #endregion
+                    #region Resumen DPW
                     rowIndex += 2;
                     using (var celda = worksheet.Cells["J" + rowIndex + ":J" + rowIndex])
                     {
                         //celda.Merge = true;
-
                         celda.Value = "TOTAL CAJAS DPW";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3978,8 +5184,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
 
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -3998,8 +5204,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "Camiones en DPW";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -4016,8 +5222,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
 
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -4035,8 +5241,8 @@ namespace JuntaOperaciones.Controllers
                         celda.Merge = true;
 
                         celda.Value = "CAMIONES";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -4053,8 +5259,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "SINI";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -4071,8 +5277,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
 
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -4090,8 +5296,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "Logisminsa";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -4108,8 +5314,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
 
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -4127,8 +5333,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
                         celda.Value = "Total Camiones Turno";
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -4145,8 +5351,8 @@ namespace JuntaOperaciones.Controllers
                         //celda.Merge = true;
 
 
-                        celda.Style.Font.Name = "Arial";
-                        celda.Style.Font.Bold = false;
+                        celda.Style.Font.Name = "Calibri";
+                        celda.Style.Font.Bold = true;
                         celda.Style.Font.Size = fontSizeCab1;
                         celda.Style.Font.Color.SetColor(ColorTranslator.FromHtml("#000000"));
                         celda.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
@@ -4162,10 +5368,12 @@ namespace JuntaOperaciones.Controllers
 
                     rowIndex++;
                   
-                    worksheet.Protection.IsProtected = true;
+                    worksheet.Protection.IsProtected = false;
                     workbook.SaveAs(memoryStream);
                     memoryStream.Position = 0;
                     TempData[handle] = memoryStream.ToArray();
+
+                    #endregion
                 }
                 // Note we are returning a filename as well as the handle
                 return Json(new { FileGuid = handle, FileName = "Data Planificación de transportes (" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ").xlsx" });
@@ -4173,7 +5381,6 @@ namespace JuntaOperaciones.Controllers
             }
             catch (Exception EX)
             {
-
                 throw;
             }
         }

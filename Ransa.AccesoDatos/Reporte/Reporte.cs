@@ -49,9 +49,21 @@ namespace Ransa.AccesoDatos.Reporte
 
             return dtResultado.ToList<Entidad.GetPlanTransporteEmbarque>();
         }
+        public List<Entidad.GetReporteDetalladoEmbarque> ConsultaDetalleEmbarque(Entidad.GetReporteDetalladoQueryInput parametros)
+        {
+            dtResultado = DB2Helper.ExecuteDb2Query(CommandType.StoredProcedure, "SP_REPORTE_EMBARQUE_DETALLE", parametros);
+
+            return dtResultado.ToList<Entidad.GetReporteDetalladoEmbarque>();
+        }
+        public List<Entidad.GetReporteDetalladoDesembarque> ConsultaDetalleDescarga(Entidad.GetReporteDetalladoQueryInput parametros)
+        {
+            dtResultado = DB2Helper.ExecuteDb2Query(CommandType.StoredProcedure, "SP_REPORTE_DESCARGA_DETALLE", parametros);
+
+            return dtResultado.ToList<Entidad.GetReporteDetalladoDesembarque>();
+        }
 
 
 
-        
+
     }
 }
